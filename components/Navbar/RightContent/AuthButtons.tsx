@@ -3,16 +3,13 @@ import { Button, Text } from "@chakra-ui/react";
 import { ethers } from "ethers";
 import { handleConnectWallet } from "@/components/Modal/Auth/Login";
 
-/**
- * Displays 2 authentication buttons which open the authentication modal when clicked:
- *  - `Log In`: opens the log in modal
- *  - `Sign Up`: opens the sign up modal
- * @returns {React.FC} - Authentication buttons (log in and sign up)
- */
 const AuthButtons: React.FC = () => {
-  const setAuthModalState = useSetRecoilState(authModalState); // Set global state
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [userIdentity, setUserIdentity] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
-    <>
+    <div>
       <Button
         variant="outline"
         height="28px"
@@ -20,20 +17,18 @@ const AuthButtons: React.FC = () => {
         width={{ base: "70px", md: "110px" }} // on mobile the width is 70px, on desktop 110px
         mr={2}
         ml={2}
-        onClick={() => setAuthModalState({ open: true, view: "login" })} // When clicked execute this function, the modal is opened in the log in view
+        onClick={() => handleConnectWallet(setProvider, setUserIdentity, setIsAuthenticated)}
       >
-        Log In
+        Sign in with Ethereum: Semaphore
       </Button>
-      <Button
-        height="28px"
-        display={{ base: "none", md: "flex" }} // on mobile, this button is not displayed
-        width={{ base: "70px", md: "110px" }} // on mobile the width is 70px, on desktop 110px
-        mr={2} // margin right
-        onClick={() => setAuthModalState({ open: true, view: "signup" })} // When clicked execute this function, the modal is opened in the sign up view
-      >
-        Sign Up
-      </Button>
-    </>
+
+      {isAuthenticated && (
+        <Text textAlign="center" color="green" fontSize="10pt" fontWeight="800">
+          Welcome to the site!
+        </Text>
+      )}
+    </div>
   );
 };
+
 export default AuthButtons;
