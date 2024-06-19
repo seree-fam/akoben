@@ -1,6 +1,6 @@
 export interface UserInfo {
     /**
-     * The display name of the user (will be static)
+     * The display name of the user (will be their semaphore id)
      */
     readonly displayName: string | null;
     /**

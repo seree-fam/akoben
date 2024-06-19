@@ -1,9 +1,8 @@
 import { defaultMenuItem } from "@/atoms/directoryMenuAtom";
-import { auth } from "@/firebase/clientApp";
 import useDirectory from "@/hooks/useDirectory";
 import { Flex, Image } from "@chakra-ui/react";
 import React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
 import Directory from "./Directory/Directory";
 import RightContent from "./RightContent/RightContent";
 import SearchInput from "./SearchInput";
@@ -24,7 +23,7 @@ import SearchInput from "./SearchInput";
  *  - Community directory menu which would display all the subscribed communities and create community option
  *
  * If the user is not authenticated, it will display the:
- *  - Authentication buttons (log in and sing up)
+ *  - Authentication buttons (log in and sign up)
  *  - User menu with different options
  * @returns {React.FC} - Navbar component
  *
@@ -33,7 +32,7 @@ import SearchInput from "./SearchInput";
  * @requires ./Directory - showing community menu button
  */
 const Navbar: React.FC = () => {
-  const [user, loading, error] = useAuthState(auth); // will be passed to child components
+  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
   const { onSelectMenuItem } = useDirectory();
 
   return (
@@ -74,7 +73,7 @@ const Navbar: React.FC = () => {
       {user && <Directory />}
       <SearchInput />
       {/* Changes depending on whether user is authenticated or not */}
-      <RightContent user={user} />
+      <RightContent user={user || null} />
     </Flex>
   );
 };

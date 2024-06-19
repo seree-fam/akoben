@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
+import { User } from "@/components/User/User";
 
 /**
  * @param {string} communityName - Name of the community

@@ -2,7 +2,7 @@
 import { authModalState } from "@/atoms/authModalAtom";
 import { communityState } from "@/atoms/communitiesAtom";
 import { Post, postState, PostVote } from "@/atoms/postsAtom";
-import { auth, firestore, storage } from "@/firebase/clientApp";
+import { firestore, storage } from "@/firebase/clientApp";
 import {
   collection,
   deleteDoc,

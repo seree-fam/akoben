@@ -27,7 +27,7 @@ const Login: React.FC = () => {
           mb={2}
           onClick={() => window.location.reload()}
         >
-          Sign in with Ethereum: Semaphore
+          Sign into Akoben
         </Button>
       )}
     </div>
