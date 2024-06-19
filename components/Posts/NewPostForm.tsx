@@ -12,7 +12,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { User } from "@/components/User/User";
 import {
   addDoc,
   collection,
@@ -34,7 +34,7 @@ import TabItem from "./TabItem";
  * @param {user} - user object
  */
 type NewPostFormProps = {
-  user: User; // parent component checks user so additional checks aer not needed ut
+  user: User; // A representation of a semaphore user
   communityImageURL?: string;
   currentCommunity?: Community;
 };

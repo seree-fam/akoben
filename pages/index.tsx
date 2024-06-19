@@ -6,7 +6,7 @@ import Recommendations from "@/components/Community/Recommendations";
 import PageContent from "@/components/Layout/PageContent";
 import PostLoader from "@/components/Loaders/PostLoader";
 import PostItem from "@/components/Posts/PostItem";
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import useCustomToast from "@/hooks/useCustomToast";
 import usePosts from "@/hooks/usePosts";
@@ -21,12 +21,10 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [user, loadingUser] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
   const { communityStateValue } = useCommunityData();
   const {
