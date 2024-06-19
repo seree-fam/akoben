@@ -1,13 +1,11 @@
 import { Community } from "@/atoms/communitiesAtom";
-import { auth } from "@/firebase/clientApp";
 import { Box, Button, Flex, Icon, Stack, Text } from "@chakra-ui/react";
-import { User } from "@firebase/auth";
 import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 
 /**
  * @param {string} communityName - Name of the community
@@ -33,6 +31,15 @@ type AboutProps = {
  */
 const About: React.FC<AboutProps> = ({ communityData }) => {
   const router = useRouter();
+  const [user, userLoading, userError] = useSemaphoreAuthState(); 
+
+  if (userLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (userError) {
+    return <Text>Error: {userError.message}</Text>;
+  }
 
   return (
     // sticky position for the about section
@@ -56,7 +63,7 @@ const About: React.FC<AboutProps> = ({ communityData }) => {
           >
             Create Post
           </Button>
-          <AdminSectionAbout communityData={communityData} />
+          <AdminSectionAbout communityData={communityData} user={user} />
         </Stack>
       </Flex>
     </Box>
@@ -131,6 +138,7 @@ const AboutCommunity: React.FC<AboutCommunityProps> = ({ communityData }) => (
  */
 type AdminSectionAboutProps = {
   communityData: Community;
+  user: User | null; // Add user prop
 };
 
 /**
@@ -140,10 +148,11 @@ type AdminSectionAboutProps = {
  */
 const AdminSectionAbout: React.FC<AdminSectionAboutProps> = ({
   communityData,
+  user,
 }) => {
   const [isCommunitySettingsModalOpen, setCommunitySettingsModalOpen] =
     useState(false);
-  const [user] = useAuthState(auth);
+
   return (
     <>
       {user?.uid === communityData?.creatorId && (
