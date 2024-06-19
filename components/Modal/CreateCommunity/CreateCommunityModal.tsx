@@ -1,4 +1,4 @@
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
 import {
   Box,
@@ -24,6 +24,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { IconType } from "react-icons";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
 import { HiLockClosed } from "react-icons/hi";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 
 /**
  * Options for the community type that can be created.
@@ -77,7 +78,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   open,
   handleClose,
 }) => {
-  const [user] = useAuthState(auth);
+  const [user, userLoading, userError] = useSemaphoreAuthState();
   const communityNameLengthLimit = 25; // community names are 25 characters long
   const [communityName, setCommunityName] = useState("");
   const [charRemaining, setCharRemaining] = useState(communityNameLengthLimit);
