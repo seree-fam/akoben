@@ -1,7 +1,7 @@
-import { authModalState } from "@/atoms/authModalAtom";
-import { Button } from "@chakra-ui/react";
-import React from "react";
-import { useSetRecoilState } from "recoil";
+import React, { useState } from "react";
+import { Button, Text } from "@chakra-ui/react";
+import { ethers } from "ethers";
+import { handleConnectWallet } from "@/components/Modal/Auth/Login";
 
 /**
  * Displays 2 authentication buttons which open the authentication modal when clicked:

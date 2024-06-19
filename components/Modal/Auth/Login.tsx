@@ -9,6 +9,7 @@ const ALCHEMY_API_KEY = "lyWjJAFsJ3u1e1h91qZyz683KLct-Rr6";
 
 const Login: React.FC = () => {
   const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [userIdentity, setUserIdentity] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleConnectWallet = async () => {
@@ -38,6 +39,7 @@ const Login: React.FC = () => {
       console.log("Message signed:", signature);
       const identity = new Identity(signature);
       console.log("Identity commitment:", identity.commitment.toString());
+      setUserIdentity(identity.commitment.toString());
 
       const alchemyProvider = new ethers.providers.AlchemyProvider("homestead", ALCHEMY_API_KEY);
 
