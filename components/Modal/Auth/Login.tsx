@@ -1,144 +1,87 @@
-import { Button, Flex, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { useSetRecoilState } from "recoil";
-import { authModalState } from "../../../atoms/authModalAtom";
-import { auth } from "../../../firebase/clientApp";
-import { FIREBASE_ERRORS } from "../../../firebase/errors";
-import InputField from "./InputField";
+import { Button, Text } from "@chakra-ui/react";
+import { ethers } from "ethers";
+import { SemaphoreSubgraph } from "@semaphore-protocol/data";
+import { Identity } from "@semaphore-protocol/identity";
+import { Group } from "@semaphore-protocol/group";
 
-type LoginProps = {};
+const ALCHEMY_API_KEY = "lyWjJAFsJ3u1e1h91qZyz683KLct-Rr6";
 
-/**
- * Allows the user to input the log in credentials (email and password) to log into the site.
- * Contains 2 input fields, `Email` and `Password` and a log in button.
- *
- * If the credentials are correct, the user is signed in.
- * If the credentials are incorrect, error messages are displayed.
- *
- * Buttons for resetting the password and signing up are present.
- * Clicking these buttons would change the modal to the appropriate view.
- * @returns {React.FC} - Login component
- *
- * @see https://github.com/CSFrequency/react-firebase-hooks/tree/master/auth
- */
-const Login: React.FC<LoginProps> = () => {
-  const setAuthModalState = useSetRecoilState(authModalState); // Set global state
-  const [loginForm, setLoginForm] = useState({
-    email: "", // Initially empty email
-    password: "", // Initially empty password
-  });
+const Login: React.FC = () => {
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [signInWithEmailAndPassword, user, loading, error] =
-    useSignInWithEmailAndPassword(auth);
+  const handleConnectWallet = async () => {
+    try {
+      console.log("Connecting wallet...");
 
-  /**
-   * This function is used as the event handler for a form submission.
-   * It will prevent the page from refreshing.
-   * Automatically checks if the user with the email exists and if the password is correct.
-   * @param {React.FormEvent<HTMLFormElement>} event - the submit event triggered by the form
-   */
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent page from reloading
+      if (!window.ethereum) {
+        console.error("MetaMask is not installed");
+        return;
+      }
 
-    console.log('hi')
-  }; // Function to execute when the form is submitted
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      if (accounts.length === 0) {
+        console.error("No accounts found");
+        return;
+      }
 
-  /**
-   * Function to execute when the form is changed (when email and password are typed).
-   * Multiple inputs use the same `onChange` function.
-   * @param event (React.ChangeEvent<HTMLInputElement>) - the event that is triggered when the form is changed
-   */
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Update form state
-    setLoginForm((prev) => ({
-      ...prev, // Spread previous state because we don't want to lose the other input's value
-      [event.target.name]: event.target.value, // Catch the name of the input that was changed and update the corresponding state
-    }));
-  };
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(web3Provider);
 
-  /**
-   * Determines whether the button is disabled or not.
-   * The button is disabled if the email or password is empty.
-   * @returns {boolean} - Whether the button is disabled or not
-   */
-  const isButtonDisabled = () => {
-    return (
-      !loginForm.email || !loginForm.password
-      // signUpForm.confirmPassword !== signUpForm.password
-    );
+      console.log("Wallet connected");
+
+      const signer = web3Provider.getSigner();
+      const message = "welcome to freedom";
+      console.log("Signing message...");
+      const signature = await signer.signMessage(message);
+      console.log("Message signed:", signature);
+      const identity = new Identity(signature);
+      console.log("Identity commitment:", identity.commitment.toString());
+
+      const alchemyProvider = new ethers.providers.AlchemyProvider("homestead", ALCHEMY_API_KEY);
+
+      const semaphoreSubgraph = new SemaphoreSubgraph("sepolia");
+      console.log("Fetching group data...");
+      const groupData = await semaphoreSubgraph.getGroup("42", { members: true });
+      const members = groupData?.members;
+      console.log("Group members:", members);
+
+      if (members && members.includes(identity.commitment.toString())) {
+        setIsAuthenticated(true);
+        console.log("User is authenticated");
+      } else {
+        const code = prompt("Enter your invite code:");
+        if (code) {
+          const group = new Group(members || []);
+          group.addMember(identity.commitment);
+          setIsAuthenticated(true);
+          console.log("User added to the group and authenticated");
+        }
+      }
+    } catch (error) {
+      console.error("Error connecting wallet or during sign message or group check:", error);
+    }
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <InputField
-        name="email"
-        placeholder="Email"
-        type="email"
-        onChange={onChange}
-      />
-
-      <InputField
-        name="password"
-        placeholder="Password"
-        type="password"
-        onChange={onChange}
-      />
-
-      <Text textAlign="center" color="red" fontSize="10pt" fontWeight="800">
-        {FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]}
-      </Text>
-
+    <div>
       <Button
         width="100%"
         height="36px"
         mt={2}
         mb={2}
-        type="submit"
-        isLoading={loading}
-        isDisabled={isButtonDisabled()}
+        onClick={handleConnectWallet}
       >
-        {" "}
-        {/* When the form is submitted, execute onSubmit function */}
-        Log In
+        Sign in with Ethereum: Semaphore
       </Button>
 
-      <Flex fontSize="9pt" justifyContent="center" mb={2}>
-        <Text fontSize="9pt" mr={1}>
-          Forgot your password?
+      {isAuthenticated && (
+        <Text textAlign="center" color="green" fontSize="10pt" fontWeight="800">
+          Welcome to the site!
         </Text>
-        <Text
-          color="red.500"
-          fontWeight={700}
-          cursor="pointer"
-          onClick={() =>
-            setAuthModalState((prev) => ({
-              ...prev,
-              view: "resetPassword",
-            }))
-          }
-        >
-          Reset Password
-        </Text>
-      </Flex>
-
-      <Flex fontSize="9pt" justifyContent="center">
-        <Text mr={1}>Want to join the circus? </Text>
-        <Text
-          color="red.500"
-          fontWeight={700}
-          cursor="pointer"
-          onClick={() =>
-            setAuthModalState((prev) => ({
-              ...prev,
-              view: "signup",
-            }))
-          }
-        >
-          Sign Up
-        </Text>
-      </Flex>
-    </form>
+      )}
+    </div>
   );
 };
 
