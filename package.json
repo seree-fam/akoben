@@ -26,6 +26,7 @@
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "eslint-config-next": "14.2.3",
+    "ethers": "^5.7.2",
     "firebase": "^10.12.2",
     "firebase-admin": "^12.1.1",
     "firebase-functions": "^5.0.1",

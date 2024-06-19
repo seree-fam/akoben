@@ -113,7 +113,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       communityId: communityId as string,
       communityImageURL: communityImageURL || "",
       creatorId: user?.uid,
-      creatorUsername: user.email!.split("@")[0],
+      creatorUsername: user?.uid,
       title: textInputs.title,
       body: textInputs.body,
       numberOfComments: 0,

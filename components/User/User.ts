@@ -29,10 +29,4 @@ export interface User extends UserInfo {
    * Deletes and signs out the user.
    */
   delete(): Promise<void>;
-  /**
-   * Returns a JSON-serializable representation of this object.
-   *
-   * @returns A JSON-serializable representation of this object.
-   */
-  toJSON(): object;
 }

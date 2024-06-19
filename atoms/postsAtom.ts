@@ -6,8 +6,8 @@ import { atom } from "recoil";
  * Posts are created by users and are stored in the `posts` collection in Firebase.
  * @property {string} id - ID of the post
  * @property {string} communityId - ID of the community the post belongs to
- * @property {string} creatorId - ID of the user who created the post
- * @property {string} creatorUsername - username of the user who created the post
+ * @property {string} creatorId - Semaphore ID of the user who created the post
+ * @property {string} creatorUsername - Semaphore ID of the user who created the post
  * @property {string} title - title of the post
  * @property {string} body - body of the post
  * @property {number} numberOfComments - number of comments on the post
