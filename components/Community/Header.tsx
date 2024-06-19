@@ -4,12 +4,11 @@ import React, { useState } from "react";
 import { HiArrowCircleUp } from "react-icons/hi";
 import useCommunityData from "@/hooks/useCommunityData";
 import { useRouter } from "next/router";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
 import { FiSettings } from "react-icons/fi";
 import IconItem from "../atoms/Icon";
 import CommunitySettingsModal from "../Modal/CommunitySettings/CommunitySettings";
-
+import { User } from "@/components/User/User";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 /**
  * @param {communityData} - data required to be displayed
  */
@@ -34,9 +33,19 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ communityData }) => {
   const { communityStateValue, onJoinOrLeaveCommunity, loading } =
     useCommunityData();
+  const [user, userLoading, userError] = useSemaphoreAuthState();
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   ); // check if the user is already subscribed to the community
+
+  if (userLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (userError) {
+    return <Text>Error: {userError.message}</Text>;
+  }
+
   return (
     <Flex direction="column" width="100%" height="120px">
       <Box height="30%" bg="red.500" />
@@ -50,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
           <Flex padding="10px 16px" width="100%">
             <CommunityName id={communityData.id} />
             <Flex direction="row" flexGrow={1} align="end" justify="end">
-              <CommunitySettings communityData={communityData} />
+              <CommunitySettings communityData={communityData} user={user} />
               <JoinOrLeaveButton
                 isJoined={isJoined}
                 onClick={() => onJoinOrLeaveCommunity(communityData, isJoined)}
@@ -160,14 +169,15 @@ export const JoinOrLeaveButton: React.FC<JoinOrLeaveButtonProps> = ({
 
 type CommunitySettingsProps = {
   communityData: Community;
+  user: User | null; // Add user prop
 };
 
 export const CommunitySettings: React.FC<CommunitySettingsProps> = ({
   communityData,
+  user,
 }) => {
   const router = useRouter();
   const { communityId } = router.query;
-  const [user] = useAuthState(auth);
   const [isCommunitySettingsModalOpen, setCommunitySettingsModalOpen] =
     useState(false);
 
