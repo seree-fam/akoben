@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import PostItem from "./PostItem";
 import PostLoader from "../Loaders/PostLoader";
 import useCustomToast from "@/hooks/useCustomToast";
-import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 import { Text as ChakraText } from "@chakra-ui/react"; // Rename the Text component to avoid conflict
 
 /**
@@ -27,7 +27,7 @@ type PostsProps = {
  * @returns {React.FC<PostsProps>} - Posts component
  */
 const Posts: React.FC<PostsProps> = ({ communityData }) => {
-  const [user, userLoading, userError] = useSemaphoreAuthState(); // Use the custom hook
+  const [user, userLoading, userError, , ] = useSemaphoreAuthState(); 
   const [loading, setLoading] = useState(false);
   const {
     postStateValue,

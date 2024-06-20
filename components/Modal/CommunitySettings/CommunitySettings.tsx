@@ -64,7 +64,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   handleClose,
   communityData,
 }) => {
-  const [user, userLoading, userError] = useSemaphoreAuthState();
+  const [user, userLoading, userError, , ] = useSemaphoreAuthState();
   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(300, 300);
   const selectFileRef = useRef<HTMLInputElement | null>(null);
   const [communityStateValue, setCommunityStateValue] = useRecoilState(communityState);

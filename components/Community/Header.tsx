@@ -33,7 +33,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ communityData }) => {
   const { communityStateValue, onJoinOrLeaveCommunity, loading } =
     useCommunityData();
-  const [user, userLoading, userError] = useSemaphoreAuthState();
+  const [user, userLoading, userError, , ] = useSemaphoreAuthState();
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   ); // check if the user is already subscribed to the community

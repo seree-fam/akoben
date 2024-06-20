@@ -2,7 +2,7 @@ import { defaultMenuItem } from "@/atoms/directoryMenuAtom";
 import useDirectory from "@/hooks/useDirectory";
 import { Flex, Image } from "@chakra-ui/react";
 import React from "react";
-import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 import Directory from "./Directory/Directory";
 import RightContent from "./RightContent/RightContent";
 import SearchInput from "./SearchInput";
@@ -32,7 +32,7 @@ import SearchInput from "./SearchInput";
  * @requires ./Directory - showing community menu button
  */
 const Navbar: React.FC = () => {
-  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
   const { onSelectMenuItem } = useDirectory();
 
   return (

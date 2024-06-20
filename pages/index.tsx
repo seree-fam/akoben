@@ -27,7 +27,7 @@ import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 const PostPage: React.FC = () => {
   const { postStateValue, setPostStateValue, onDeletePost, onVote } = usePosts();
   const { communityStateValue } = useCommunityData();
-  const [user, loading, error] = useSemaphoreAuthState(); 
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
   const router = useRouter();
   const showToast = useCustomToast();
   const [hasFetched, setHasFetched] = useState(false);

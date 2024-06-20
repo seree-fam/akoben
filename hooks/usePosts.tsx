@@ -33,7 +33,7 @@ import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
  * @return {(post: Post) => Promise} onDeletePost - function that handles deleting a post
  */
 const usePosts = () => {
-  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const currentCommunity = useRecoilValue(communityState).currentCommunity;
   const setAuthModalState = useSetRecoilState(authModalState);

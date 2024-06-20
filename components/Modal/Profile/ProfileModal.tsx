@@ -29,7 +29,7 @@ type ProfileModalProps = {
 };
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
-  const [user, userLoading, userError] = useSemaphoreAuthState();
+  const [user, userLoading, userError, , ] = useSemaphoreAuthState();
   const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile(300, 300);
   const selectFileRef = useRef<HTMLInputElement>(null); // Correctly type the ref
   const showToast = useCustomToast();

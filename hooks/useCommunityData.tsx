@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import useCustomToast from "./useCustomToast";
-import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 
 /**
  * Checks whether a user is subscribed to a community.
@@ -30,7 +30,7 @@ import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import
  * @returns {boolean} loading - indicates whether a community operation is currently in progress
  */
 const useCommunityData = () => {
-  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
   const [communityStateValue, setCommunityStateValue] = useRecoilState(communityState);
   const [loadingState, setLoadingState] = useState(false);
   const [errorState, setErrorState] = useState("");

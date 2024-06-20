@@ -18,7 +18,7 @@ import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
  * @returns {React.FC} - Submit post page component
  */
 const SubmitPostPage: React.FC = () => {
-  const [user, loading, error] = useSemaphoreAuthState(); 
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
   const { communityStateValue } = useCommunityData();
   const setAuthModalState = useSetRecoilState(authModalState);
 

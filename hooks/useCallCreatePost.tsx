@@ -2,7 +2,7 @@ import { authModalState } from "@/atoms/authModalAtom";
 import { useRouter } from "next/router";
 import { useSetRecoilState } from "recoil";
 import useDirectory from "./useDirectory";
-import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 
 /**
  * Redirects the user to the create post page if the user is logged in.
@@ -11,7 +11,7 @@ import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import
  */
 const useCallCreatePost = () => {
   const router = useRouter();
-  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
+  const [user, loading, error, , ] = useSemaphoreAuthState();
   const setAuthModalState = useSetRecoilState(authModalState);
   const { toggleMenuOpen } = useDirectory();
 

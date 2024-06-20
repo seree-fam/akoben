@@ -1,17 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import { Identity } from "@semaphore-protocol/identity";
 import { User } from "@/components/User/User";
 
 export const useSemaphoreAuthState = () => {
   const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem("semaphoreUser");
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("semaphoreUser");
+      return storedUser ? JSON.parse(storedUser) : null;
+    }
+    return null;
   });
   const [loading, setLoading] = useState<boolean>(!user);
   const [error, setError] = useState<Error | null>(null);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
 
-  const handleConnectWallet = async () => {
+  const handleConnectWallet = useCallback(async () => {
+    if (isConnecting) return;
+    setIsConnecting(true);
+
     try {
       console.log("Connecting wallet...");
 
@@ -58,14 +65,10 @@ export const useSemaphoreAuthState = () => {
     } catch (err) {
       setError(err as Error);
       setLoading(false);
+    } finally {
+      setIsConnecting(false);
     }
-  };
+  }, [isConnecting]);
 
-  useEffect(() => {
-    if (!user) {
-      handleConnectWallet();
-    }
-  }, [user]);
-
-  return [user, loading, error, setUser] as const;
+  return [user, loading, error, handleConnectWallet, setUser] as const;
 };

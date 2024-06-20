@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, Text } from "@chakra-ui/react";
-import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 
 const AuthButtons: React.FC = () => {
-  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
 
   const handleLogin = () => {
     // Logic to connect wallet and authenticate user

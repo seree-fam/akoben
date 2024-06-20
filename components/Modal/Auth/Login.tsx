@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Text } from "@chakra-ui/react";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 
 const Login: React.FC = () => {
-  const [user, loading, error] = useSemaphoreAuthState();
+  const [user, loading, error, handleConnectWallet] = useSemaphoreAuthState();
+
+  useEffect(() => {
+    if (!user) {
+      handleConnectWallet();
+    }
+  }, [user, loading, handleConnectWallet]);
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -25,9 +31,9 @@ const Login: React.FC = () => {
           height="36px"
           mt={2}
           mb={2}
-          onClick={() => window.location.reload()}
+          onClick={handleConnectWallet}
         >
-          Sign into Akoben
+          Sign in with Ethereum: Semaphore
         </Button>
       )}
     </div>

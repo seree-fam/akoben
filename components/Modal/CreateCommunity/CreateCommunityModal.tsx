@@ -77,7 +77,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   open,
   handleClose,
 }) => {
-  const [user, userLoading, userError] = useSemaphoreAuthState();
+  const [user, userLoading, userError, , ] = useSemaphoreAuthState();
   const communityNameLengthLimit = 25; // community names are 25 characters long
   const [communityName, setCommunityName] = useState("");
   const [charRemaining, setCharRemaining] = useState(communityNameLengthLimit);

@@ -14,6 +14,7 @@ import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 import Login from "./Login"; 
+
 /**
  * Displays an authentication modal while `open` is `true`.
  * If the `open` is `false`, then the modal is closed.
@@ -30,7 +31,7 @@ import Login from "./Login";
  */
 const AuthModal: React.FC = () => {
   const [modalState, setModalState] = useRecoilState(authModalState);
-  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
+  const [user, loading, error, , ] = useSemaphoreAuthState();
 
   /**
    * If a user is authenticated, the modal will automatically close.

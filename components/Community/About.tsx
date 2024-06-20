@@ -32,7 +32,7 @@ type AboutProps = {
  */
 const About: React.FC<AboutProps> = ({ communityData }) => {
   const router = useRouter();
-  const [user, userLoading, userError] = useSemaphoreAuthState(); 
+  const [user, userLoading, userError, , ] = useSemaphoreAuthState(); 
 
   if (userLoading) {
     return <Text>Loading...</Text>;

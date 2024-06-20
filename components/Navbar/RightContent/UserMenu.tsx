@@ -189,7 +189,7 @@ const UserMenuList: React.FC<UserMenuListProps> = ({
   setProfileModalOpen,
 }) => {
   const setAuthModalState = useSetRecoilState(authModalState);
-  const [, , , setUser] = useSemaphoreAuthState();
+  const [, , , , setUser] = useSemaphoreAuthState();
   
   /**
    * Signs the user out of the app.
