@@ -4,8 +4,11 @@ import { Identity } from "@semaphore-protocol/identity";
 import { User } from "@/components/User/User";
 
 export const useSemaphoreAuthState = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem("semaphoreUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [loading, setLoading] = useState<boolean>(!user);
   const [error, setError] = useState<Error | null>(null);
 
   const handleConnectWallet = async () => {
@@ -50,6 +53,7 @@ export const useSemaphoreAuthState = () => {
       };
 
       setUser(newUser);
+      localStorage.setItem("semaphoreUser", JSON.stringify(newUser));
       setLoading(false);
     } catch (err) {
       setError(err as Error);
@@ -58,8 +62,10 @@ export const useSemaphoreAuthState = () => {
   };
 
   useEffect(() => {
-    handleConnectWallet();
-  }, []);
+    if (!user) {
+      handleConnectWallet();
+    }
+  }, [user]);
 
   return [user, loading, error, setUser] as const;
 };
