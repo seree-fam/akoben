@@ -2,7 +2,7 @@
 
 ---
 
-Introducing Circus, a simple yet powerful discussion platform that enables users to engage with each other in a variety of ways. Our platform is similar to popular sites like Reddit and Quora, but with a range of unique features that set us apart.
+Introducing Akoben, a simple yet powerful discussion platform that enables users to engage with each other in a variety of ways. Our platform is similar to popular sites like Reddit and Quora, but with a range of unique features that set us apart.
 
 Our platform is designed to promote engagement and collaboration among users, with a wide range of community management features that enable users to create, subscribe to, and interact with communities on a variety of topics. We also provide a range of features to make it easy for users to create and view posts, including options for images, voting, and sharing.
 

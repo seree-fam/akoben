@@ -116,6 +116,7 @@ const SuggestedCommunitiesList: React.FC = () => {
 
   useEffect(() => {
     getCommunityRecommendations();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Flex direction="column" mb={0}>

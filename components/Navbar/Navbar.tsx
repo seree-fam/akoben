@@ -60,11 +60,11 @@ const Navbar: React.FC = () => {
         cursor="pointer"
       >
         {/* Logo which is always visible */}
-        <Image src="/images/logo.svg" height="30px" alt="Website logo" ml={1} />
+        <Image src="/images/logo.png" height="30px" alt="Website logo" ml={1} />
 
         {/* Logo name not visible on mobile */}
         <Image
-          src="/images/logo_text.svg"
+          src="/images/logo_text.png"
           height="30px"
           display={{ base: "none", md: "unset" }}
           alt="Website text logo"

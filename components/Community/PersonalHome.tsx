@@ -42,8 +42,8 @@ const PersonalHome: React.FC = () => {
         <Flex direction="column" p="12px">
           <Flex align="center" mb={2}>
             <Image
-              src="/images/logo.svg"
-              height="50px"
+              src="favicon.ico"
+              height="30px"
               alt="Website logo"
               mr={2}
             />
