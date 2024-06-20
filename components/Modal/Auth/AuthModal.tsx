@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { authModalState } from "@/atoms/authModalState";
+import { authModalState } from "@/atoms/authModalAtom";
 import {
   Flex,
   Modal,

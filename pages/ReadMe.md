@@ -124,7 +124,7 @@ Defines a `SubmitPostPage` component for a Next.js application that displays the
 
 **Description**
 
-1. `SubmitPostPage` is a functional React component. It uses the `useAuthState` hook to get the current user's authentication state from Firebase, and the `useCommunityData` hook to get the community state value. It also uses the `useSetRecoilState` hook to get the setter function for the `authModalState` Recoil state.
+1. `SubmitPostPage` is a functional React component. It uses the `heyNow` hook to get the current user's authentication state from Firebase, and the `useCommunityData` hook to get the community state value. It also uses the `useSetRecoilState` hook to get the setter function for the `authModalState` Recoil state.
 
 2. Inside the `PageContent` component, the `SubmitPostPage` component first displays a "Create Post" heading.
 
@@ -142,7 +142,7 @@ Defines a `PostPage` component for a Next.js application that displays a single 
 
 **Description**
 
-1. `PostPage` is a functional React component. It uses several hooks, including `usePosts`, `useCommunityData`, `useAuthState`, and `useRouter`. It also uses the `useCustomToast` hook for displaying toast messages.
+1. `PostPage` is a functional React component. It uses several hooks, including `usePosts`, `useCommunityData`, `heyNow`, and `useRouter`. It also uses the `useCustomToast` hook for displaying toast messages.
 
 2. The component defines a `fetchPost` function to fetch a post by its ID from Firebase and update the state accordingly. The function sets the `postExists` state to `true` if the post is found, and `false` otherwise. It also updates the `hasFetched` and `postLoading` states.
 

@@ -20,7 +20,6 @@ import {
 import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { ChangeEvent, FC, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { IconType } from "react-icons";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
 import { HiLockClosed } from "react-icons/hi";

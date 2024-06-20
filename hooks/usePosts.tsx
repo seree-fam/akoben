@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import useCustomToast from "./useCustomToast";
-import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 
 /**
  * Hook for managing posts from various components.
@@ -61,7 +61,7 @@ const usePosts = () => {
     // check for authentication
     if (!user?.uid) {
       // user is not authenticated
-      setAuthModalState({ open: true, view: "login" }); // open login modal
+      setAuthModalState({ open: true, view: "login" }); 
       return; // exit function
     }
 

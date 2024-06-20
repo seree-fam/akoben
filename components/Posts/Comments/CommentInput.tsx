@@ -1,8 +1,8 @@
 import ProfileModal from "@/components/Modal/Profile/ProfileModal";
 import AuthButtons from "@/components/Navbar/RightContent/AuthButtons";
 import { Flex, Textarea, Button, Text, Stack } from "@chakra-ui/react";
-import { User } from "firebase/auth";
 import React, { useState } from "react";
+import { User } from "@/components/User/User";
 
 /**
  * Required props for CommentInput component
@@ -67,7 +67,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
               }}
               onClick={() => setProfileModalOpen(true)}
             >
-              {user?.email?.split("@")[0]}
+              {user?.uid}
             </Text>
           </Stack>
 

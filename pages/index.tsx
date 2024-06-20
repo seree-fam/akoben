@@ -21,6 +21,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,7 +36,7 @@ export default function Home() {
     onDeletePost,
   } = usePosts();
   const showToast = useCustomToast();
-
+  const [user, loadingUser, error] = useSemaphoreAuthState();
   /**
    * Creates a home feed for a currently logged in user.
    * If the user is a member of any communities, it will display posts from those communities.
