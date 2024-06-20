@@ -3,7 +3,9 @@
 
 ---
 
-Introducing Akoben, a simple yet powerful discussion platform that enables users to engage with each other in a variety of ways. Our platform is similar to popular sites like Reddit and Quora, but with a range of unique features that set us apart (Decentralisation).
+The boldest ideas arise when like minded individuals come together to solve a problem with the group's interest in mind. Akoben is a forum that uses Semaphore (https://semaphore.pse.dev/build) to enable users to log into a group and make posts as a part of the group without revealing their individuality.
+
+The goal for the group is to ultimately create something like they cypherpunk mail list (https://nakamotoinstitute.org/library) so that the boldest ideas can be shared with low bias.
 
 Our platform is designed to promote engagement and collaboration among users, with a wide range of community management features that enable users to create, subscribe to, and interact with communities on a variety of topics. We also provide a range of features to make it easy for users to create and view posts, including options for images, voting, and sharing.
 
@@ -121,6 +123,5 @@ docker-compose -f docker/docker-compose.yml up --build
 # **Flow**
 This workflow demonstrates the features and functionality of the project.
 
-   (https://excalidraw.com/#room=9ea6caf8ab068b5d4ab4,mQyfmZ1CW96lwVziFQIuyQ)
-
+<img width="1000" alt="cover" src="https://github.com/seree-fam/akoben/blob/ee2a18c7617c829233e4dd841acb59c363bcb18d/public/images/workflow.png">
 

@@ -9,6 +9,8 @@ import CreateCommunityModal from "../Modal/CreateCommunity/CreateCommunityModal"
  * Component for displaying card for creating a new community or post.
  * @returns {React.FC} Card for creating a new community or post.
  */
+
+
 const PersonalHome: React.FC = () => {
   const [open, setOpen] = useState(false); // modal initially closed
   const mySnippets = useRecoilValue(communityState).mySnippets;
