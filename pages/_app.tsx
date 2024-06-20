@@ -18,7 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <Layout>
           <Head>
-            <title>Circus Discussions</title>
+            <title>Akoben</title>
           </Head>
           <Component {...pageProps} />
         </Layout>

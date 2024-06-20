@@ -54,8 +54,11 @@ export default Recommendations;
  * Header includes the title "Top Communities" and a banner image with a gradient.
  * @returns {React.FC} - Recommendations header component
  */
+
+
+
 const SuggestionsHeader: React.FC = () => {
-  const bannerImage = "/images/banners/large.png";
+  const bannerImage = "/images/banners/small.jpg";
   return (
     <Flex
       align="flex-end"
@@ -116,6 +119,7 @@ const SuggestedCommunitiesList: React.FC = () => {
 
   useEffect(() => {
     getCommunityRecommendations();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Flex direction="column" mb={0}>

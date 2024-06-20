@@ -37,17 +37,17 @@ export const Button: ComponentStyleConfig = {
     solid: {
       // Default button
       color: "white",
-      bg: "red.500",
+      bg: "green.500",
       _hover: {
-        bg: "red.400",
+        bg: "green.400",
       },
     },
     outline: {
-      color: "red.500",
+      color: "green.500",
       border: "1px solid",
-      borderColor: "red.500",
+      borderColor: "green.500",
       _hover: {
-        bg: "red.50",
+        bg: "green.50",
       },
     },
     oauth: {
@@ -65,7 +65,7 @@ export const Button: ComponentStyleConfig = {
       borderColor: "white",
       _hover: {
         bg: "gray.50",
-        borderColor: "red.400",
+        borderColor: "green.400",
       },
     },
   },
