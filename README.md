@@ -13,6 +13,14 @@ In addition, we provide a robust set of user authentication and account manageme
 
 Our platform is also designed to be user-friendly and accessible, with a responsive UI that can be used on smartphones, tablets, or computers. Whether you're an experienced user or just getting started, Akoben has everything you need to engage with others and explore new ideas.
 
+
+# **Flow**
+This workflow demonstrates the features and functionality of the project.
+
+<img width="1000" alt="cover" src="https://github.com/seree-fam/akoben/blob/ee2a18c7617c829233e4dd841acb59c363bcb18d/public/images/workflow.png">
+
+
+
 # **Requirements**
 These are the requirements needed to run the project:
 - Node 18 LTS
@@ -119,9 +127,4 @@ Once everything is ready, use the command bellow to run the application.
 ```sh
 docker-compose -f docker/docker-compose.yml up --build
 ```
-
-# **Flow**
-This workflow demonstrates the features and functionality of the project.
-
-<img width="1000" alt="cover" src="https://github.com/seree-fam/akoben/blob/ee2a18c7617c829233e4dd841acb59c363bcb18d/public/images/workflow.png">
 

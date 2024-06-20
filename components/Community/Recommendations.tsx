@@ -55,8 +55,6 @@ export default Recommendations;
  * @returns {React.FC} - Recommendations header component
  */
 
-
-
 const SuggestionsHeader: React.FC = () => {
   const bannerImage = "/images/banners/small.jpg";
   return (
