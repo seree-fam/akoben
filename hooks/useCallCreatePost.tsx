@@ -1,9 +1,8 @@
 import { authModalState } from "@/atoms/authModalAtom";
-import { auth } from "@/firebase/clientApp";
 import { useRouter } from "next/router";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 import useDirectory from "./useDirectory";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
 
 /**
  * Redirects the user to the create post page if the user is logged in.
@@ -12,7 +11,7 @@ import useDirectory from "./useDirectory";
  */
 const useCallCreatePost = () => {
   const router = useRouter();
-  const [user] = useAuthState(auth);
+  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
   const setAuthModalState = useSetRecoilState(authModalState);
   const { toggleMenuOpen } = useDirectory();
 

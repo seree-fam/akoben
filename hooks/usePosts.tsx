@@ -14,55 +14,48 @@ import {
 } from "@firebase/firestore";
 import { getDocs } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import useCustomToast from "./useCustomToast";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
 
 /**
  * Hook for managing posts from various components.
  * Functionality includes:
- *  - Voting on a post
- *  - Selecting a post
- *  - Deleting a post
+ * - Voting on a post
+ * - Selecting a post
+ * - Deleting a post
  * @returns {PostState} postStateValue - object containing the current post state
  * @returns {(postState: PostState) => void} setPostStateValue - function that sets the post state
  * @returns {(post: Post) => void} onSelectPost - function that handles selecting a post
- * @return {(event: React.MouseEvent<SVGElement, MouseEvent>, post: Post, vote: number, communityId: string) => Promise<void>} onVote - function that handles voting on a post
- * @return {(post: Post) => Promise<boolean>} onDeletePost - function that handles deleting a post
+ * @return {(event: React.MouseEvent, post: Post, vote: number, communityId: string) => Promise} onVote - function that handles voting on a post
+ * @return {(post: Post) => Promise} onDeletePost - function that handles deleting a post
  */
 const usePosts = () => {
-  const [user] = useAuthState(auth);
+  const [user, loading, error] = useSemaphoreAuthState(); // Use the custom hook
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const currentCommunity = useRecoilValue(communityState).currentCommunity;
   const setAuthModalState = useSetRecoilState(authModalState);
   const router = useRouter();
   const showToast = useCustomToast();
-  // TODO: create postVote variable
 
   /**
    * Allows the user to vote on a post from the main page or single view post page.
    * If the user is not authenticated, the login modal is opened.
    * If the user has already voted on the post, the vote is removed.
    * If the user has not voted on the post, the vote is added.
-   *
-   * @param event (React.MouseEvent<SVGElement, MouseEvent>) - event when clicking on the vote button
+   * @param event (React.MouseEvent) - event when clicking on the vote button
    * @param post (Post) - post to be voted on
    * @param vote (number) - vote value (1 or -1)
    * @param communityId (string) - community id
    */
   const onVote = async (
-    event: React.MouseEvent<SVGElement, MouseEvent>,
+    event: React.MouseEvent,
     post: Post,
     vote: number,
     communityId: string
   ) => {
-    /**
-     * Voting on a post from the main page causes the post to be opened in single view.
-     * This is because the voting buttons are children of the post item component which calls the redirection.
-     * This prevents the parent from being called preventing the post from being opened.
-     */
     event.stopPropagation();
 
     // check for authentication
@@ -77,13 +70,13 @@ const usePosts = () => {
       const existingVote = postStateValue.postVotes.find(
         (vote) => vote.postId === post.id
       ); // existing vote on post
-
       const batch = writeBatch(firestore);
       // copy of state which are updated at the end
       const updatedPost = { ...post }; // copy of post
       const updatedPosts = [...postStateValue.posts]; // copy of all posts
       let updatedPostVotes = [...postStateValue.postVotes]; // copy of all post votes
       let voteChange = vote; // change in vote status
+
       // new vote
       if (!existingVote) {
         // user has not voted on post
@@ -96,9 +89,7 @@ const usePosts = () => {
           communityId,
           voteValue: vote, // +1 or -1
         }; // new vote object
-
         batch.set(postVoteRef, newVote); // add new vote to user collection
-
         // update ui state
         updatedPost.voteStatus = voteStatus + vote; // update vote status
         updatedPostVotes = [...updatedPostVotes, newVote]; // add new vote to post votes
@@ -113,16 +104,13 @@ const usePosts = () => {
         // removing/undoing current vote
         if (existingVote.voteValue === vote) {
           // user tries to vote already voted vote
-
           // update vote +-1
           updatedPost.voteStatus = voteStatus - vote; // update vote status
           updatedPostVotes = updatedPostVotes.filter(
             (vote) => vote.id !== existingVote.id
           ); // remove vote from post votes
-
           // delete document from user (user document stores which posts were voted)
           batch.delete(postVoteRef);
-
           voteChange *= -1; // update vote change
         } else {
           // user flipping vote (like to dislike or dislike to like)
@@ -130,12 +118,10 @@ const usePosts = () => {
           const voteIndexPosition = postStateValue.postVotes.findIndex(
             (vote) => vote.id === existingVote.id
           ); // get index of existing vote
-
           updatedPostVotes[voteIndexPosition] = {
             ...existingVote,
             voteValue: vote,
           }; // update vote value
-
           // updating existing document
           batch.update(postVoteRef, {
             voteValue: vote,
@@ -143,11 +129,11 @@ const usePosts = () => {
           voteChange = 2 * vote;
         }
       }
+
       // updated firestore
       const postRef = doc(firestore, "posts", post.id!); // get reference to post document
       batch.update(postRef, { voteStatus: voteStatus + voteChange }); // update vote status
       await batch.commit(); // commit batch
-
       // update ui state
       const postIndexPosition = postStateValue.posts.findIndex(
         (item) => item.id === post.id
@@ -158,7 +144,6 @@ const usePosts = () => {
         posts: updatedPosts,
         postVotes: updatedPostVotes,
       })); // update posts and post votes state on the ui
-
       // allow voting when a post is currently selected
       if (postStateValue.selectedPost) {
         setPostStateValue((prev) => ({
@@ -204,21 +189,20 @@ const usePosts = () => {
       // delete post from firestore
       const postDocRef = doc(firestore, "posts", post.id!);
       await deleteDoc(postDocRef);
-
       // update recoil state to remove the deleted post
       setPostStateValue((prev) => ({
         ...prev,
         posts: prev.posts.filter((item) => item.id !== post.id),
       }));
-
       return true; // post was deleted
     } catch (error) {
-      return false; // post was not deleted
+      console.log("Error: onDeletePost", error);
       showToast({
         title: "Could not Delete Post",
         description: "There was an error deleting your post",
         status: "error",
       });
+      return false; // post was not deleted
     }
   };
 
@@ -232,7 +216,6 @@ const usePosts = () => {
       collection(firestore, "users", `${user?.uid}/postVotes`),
       where("communityId", "==", communityId)
     );
-
     const postVoteDocs = await getDocs(postVotesQuery);
     const postVotes = postVoteDocs.docs.map((doc) => ({
       id: doc.id,
@@ -252,6 +235,7 @@ const usePosts = () => {
     if (!user || !currentCommunity?.id) {
       return;
     }
+
     getCommunityPostVotes(currentCommunity?.id);
   }, [user, currentCommunity]);
 
@@ -272,4 +256,5 @@ const usePosts = () => {
     onDeletePost,
   };
 };
+
 export default usePosts;

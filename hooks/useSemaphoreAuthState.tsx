@@ -16,12 +16,17 @@ export const useSemaphoreAuthState = () => {
         throw new Error("MetaMask is not installed");
       }
 
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const ethereum = window.ethereum;
+      if (!ethereum.request) {
+        throw new Error("MetaMask request method is not available");
+      }
+
+      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
       if (accounts.length === 0) {
         throw new Error("No accounts found");
       }
 
-      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+      const web3Provider = new ethers.providers.Web3Provider(ethereum);
       const signer = web3Provider.getSigner();
       const message = "welcome to freedom";
       const signature = await signer.signMessage(message);
@@ -56,5 +61,5 @@ export const useSemaphoreAuthState = () => {
     handleConnectWallet();
   }, []);
 
-  return [user, loading, error] as const;
+  return [user, loading, error, setUser] as const;
 };

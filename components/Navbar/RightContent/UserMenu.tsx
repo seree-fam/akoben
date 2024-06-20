@@ -1,4 +1,4 @@
-import { authModalState } from "@/atoms/authModalState";
+import { authModalState } from "@/atoms/authModalAtom";
 import CustomMenuButton from "@/components/atoms/CustomMenuButton";
 import ProfileModal from "@/components/Modal/Profile/ProfileModal";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
@@ -189,8 +189,8 @@ const UserMenuList: React.FC<UserMenuListProps> = ({
   setProfileModalOpen,
 }) => {
   const setAuthModalState = useSetRecoilState(authModalState);
-  const [_, setUser] = useSemaphoreAuthState(); // Use the custom hook to set user state
-
+  const [, , , setUser] = useSemaphoreAuthState();
+  
   /**
    * Signs the user out of the app.
    * Once logged out, the state of the current logged in user is cleared globally.

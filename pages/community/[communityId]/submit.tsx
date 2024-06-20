@@ -3,12 +3,11 @@ import About from "@/components/Community/About";
 import PageContent from "@/components/Layout/PageContent";
 import AuthButtons from "@/components/Navbar/RightContent/AuthButtons";
 import NewPostForm from "@/components/Posts/NewPostForm";
-import { auth } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import { Box, Stack, Text } from "@chakra-ui/react";
 import React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 
 /**
  * Post submission page where the user can create a new post.
@@ -19,8 +18,7 @@ import { useSetRecoilState } from "recoil";
  * @returns {React.FC} - Submit post page component
  */
 const SubmitPostPage: React.FC = () => {
-  const [user] = useAuthState(auth);
-  // const communityStateValue = useRecoilValue(communityState);
+  const [user, loading, error] = useSemaphoreAuthState(); 
   const { communityStateValue } = useCommunityData();
   const setAuthModalState = useSetRecoilState(authModalState);
 
