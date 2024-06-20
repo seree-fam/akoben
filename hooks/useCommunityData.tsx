@@ -5,7 +5,7 @@ import {
   CommunitySnippet,
   communityState,
 } from "@/atoms/communitiesAtom";
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import {
   collection,
   doc,
@@ -16,9 +16,9 @@ import {
 } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import useCustomToast from "./useCustomToast";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 
 /**
  * Checks whether a user is subscribed to a community.
@@ -30,11 +30,10 @@ import useCustomToast from "./useCustomToast";
  * @returns {boolean} loading - indicates whether a community operation is currently in progress
  */
 const useCommunityData = () => {
-  const [user] = useAuthState(auth);
-  const [communityStateValue, setCommunityStateValue] =
-    useRecoilState(communityState);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
+  const [communityStateValue, setCommunityStateValue] = useRecoilState(communityState);
+  const [loadingState, setLoadingState] = useState(false);
+  const [errorState, setErrorState] = useState("");
   const setAuthModalState = useSetRecoilState(authModalState);
   const router = useRouter();
   const showToast = useCustomToast();
@@ -47,25 +46,20 @@ const useCommunityData = () => {
    * @param {Community} communityData - object is an object representing the community being joined or left
    * @param {boolean} isJoined - indicates whether the user is currently a member of the community
    */
-  const onJoinOrLeaveCommunity = (
-    communityData: Community,
-    isJoined: boolean
-  ) => {
+  const onJoinOrLeaveCommunity = (communityData: Community, isJoined: boolean) => {
     // open the authentication modal if the user is not logged in
     if (!user) {
       setAuthModalState({ open: true, view: "login" });
       return;
     }
 
-    setLoading(true);
-
+    setLoadingState(true);
     if (isJoined) {
       leaveCommunity(communityData.id);
-      return;
+    } else {
+      joinCommunity(communityData);
     }
-    joinCommunity(communityData);
-
-    setLoading(false);
+    setLoadingState(false);
   };
 
   /**
@@ -74,7 +68,7 @@ const useCommunityData = () => {
    * @throws {error} - failed to fetch required data
    */
   const getMySnippets = async () => {
-    setLoading(true);
+    setLoadingState(true);
     try {
       // fetch document storing the snippets representing subscriptions
       const snippetDocs = await getDocs(
@@ -93,22 +87,20 @@ const useCommunityData = () => {
         description: "There was an error fetching your subscriptions",
         status: "error",
       });
-      setError(error.message);
+      setErrorState(error.message);
     } finally {
-      setLoading(false);
+      setLoadingState(false);
     }
   };
 
   /**
    * Subscribes the currently authenticated user to the community.
-   *
    * @param communityData (Community) - community to which the user is subscribed to
    * @throws error - error in subscribing to a community
    */
   const joinCommunity = async (communityData: Community) => {
     try {
       const batch = writeBatch(firestore);
-
       // creates a new snippet representing the subscription (from current page)
       const newSnippet: CommunitySnippet = {
         communityId: communityData.id, // community id from the current community page
@@ -116,7 +108,6 @@ const useCommunityData = () => {
         // if the creator of community re-subscribes to the community
         isAdmin: user?.uid === communityData.creatorId, // if the user is the creator of the community
       };
-
       // create a new community snippet into the user document (subscription)
       batch.set(
         doc(
@@ -126,12 +117,10 @@ const useCommunityData = () => {
         ),
         newSnippet
       );
-
       // updating the number of members
       batch.update(doc(firestore, "communities", communityData.id), {
         numberOfMembers: increment(1),
       });
-
       await batch.commit();
       // update state to update the UI
       setCommunityStateValue((prev) => ({
@@ -145,22 +134,19 @@ const useCommunityData = () => {
         description: "There was an error subscribing to the community",
         status: "error",
       });
-      setError(error.message);
+      setErrorState(error.message);
     }
-    setLoading(false);
   };
 
   /**
    * Fetches the community data from the database and updates the state by storing it in the Recoil atom.
    * @param {string} communityId - community id of the community to be fetched
-   *
    * @async
    */
   const getCommunityData = async (communityId: string) => {
     try {
       const communityDocRef = doc(firestore, "communities", communityId);
       const communityDoc = await getDoc(communityDocRef);
-
       // update state to update the UI by selecting the community
       setCommunityStateValue((prev) => ({
         ...prev,
@@ -182,27 +168,21 @@ const useCommunityData = () => {
   /**
    * Unsubscribes the currently authenticated user from the community
    * @param {string} communityId - community from which the user is unsubscribed from
-   *
    * @async
-   *
    * @throws {any} error - error in subscribing to a community
    */
   const leaveCommunity = async (communityId: string) => {
     try {
       const batch = writeBatch(firestore);
-
       // delete new community snippet
       batch.delete(
         doc(firestore, `users/${user?.uid}/communitySnippets`, communityId)
       );
-
       // updating the number of members
       batch.update(doc(firestore, "communities", communityId), {
         numberOfMembers: increment(-1),
       });
-
       await batch.commit();
-
       // update state to update the UI
       setCommunityStateValue((prev) => ({
         ...prev,
@@ -212,14 +192,13 @@ const useCommunityData = () => {
       }));
     } catch (error: any) {
       console.log("Error: leaveCommunity", error.message);
-      setError(error.message);
+      setErrorState(error.message);
       showToast({
         title: "Could not Unsubscribe",
         description: "There was an error unsubscribing from the community",
         status: "error",
       });
     }
-    setLoading(false);
   };
 
   /**
@@ -235,6 +214,7 @@ const useCommunityData = () => {
       }));
       return;
     }
+
     getMySnippets();
   }, [user]);
 
@@ -254,7 +234,7 @@ const useCommunityData = () => {
   return {
     communityStateValue,
     onJoinOrLeaveCommunity,
-    loading,
+    loading: loadingState,
   };
 };
 

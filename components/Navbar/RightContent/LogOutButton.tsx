@@ -1,13 +1,13 @@
-import { auth } from "@/firebase/clientApp";
 import { Button } from "@chakra-ui/react";
-import { signOut } from "firebase/auth";
 import React from "react";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 
 /**
  * Displays a log out button which signs out the currently logged in user.
  * @returns {React.FC} - Log out button
  */
 const LogOutButton: React.FC = () => {
+  const [user, loading, error, handleConnectWallet, setUser] = useSemaphoreAuthState();
   return (
     <Button
       height="28px"
@@ -15,7 +15,7 @@ const LogOutButton: React.FC = () => {
       width={{ base: "70px", md: "110px" }} // on mobile the width is 70px, on desktop 110px
       mr={2}
       ml={2}
-      onClick={() => signOut(auth)}
+      onClick={() => setUser(null)}
     >
       Log Out
     </Button>

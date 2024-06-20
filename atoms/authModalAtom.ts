@@ -2,15 +2,15 @@ import { atom } from "recoil";
 
 /**
  * Interface which describes the state of the authentication modal.
- * The modal has 2 properties:
+ * The modal has 1 property:
  * @property {boolean} open - whether the modal is open or not
- * @property {"login" | "signup" | "resetPassword"} view - which specific view of the modal should be displayed
+ * @property {"login"} view - which specific view of the modal should be displayed
  *
  * @see https://recoiljs.org/docs/basic-tutorial/atoms/
  */
 export interface AuthModalState {
   open: boolean;
-  view: "login" | "signup" | "resetPassword";
+  view: "login";
 }
 
 /**

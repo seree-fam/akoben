@@ -12,7 +12,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { User } from "@/components/User/User";
 import {
   addDoc,
   collection,
@@ -34,7 +34,7 @@ import TabItem from "./TabItem";
  * @param {user} - user object
  */
 type NewPostFormProps = {
-  user: User; // parent component checks user so additional checks aer not needed ut
+  user: User; // A representation of a semaphore user
   communityImageURL?: string;
   currentCommunity?: Community;
 };
@@ -113,7 +113,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       communityId: communityId as string,
       communityImageURL: communityImageURL || "",
       creatorId: user?.uid,
-      creatorUsername: user.email!.split("@")[0],
+      creatorUsername: user?.uid,
       title: textInputs.title,
       body: textInputs.body,
       numberOfComments: 0,

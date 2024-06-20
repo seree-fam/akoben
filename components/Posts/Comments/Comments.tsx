@@ -11,7 +11,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { User } from "firebase/auth";
 import {
   collection,
   doc,
@@ -28,10 +27,11 @@ import React, { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import CommentInput from "./CommentInput";
 import CommentItem, { Comment } from "./CommentItem";
+import { User } from "@/components/User/User";
 
 /**
  * Required props for Comments component
- * @param {User} user - User object from firebase
+ * @param {User} user - Semaphore User
  * @param {Post} selectedPost - Post object from firebase
  * @param {string} communityId - id of the community
  */
@@ -48,7 +48,7 @@ type CommentsProps = {
  * If there are no comments, displays a message.
  * Show loading skeleton while fetching comments.
  * If everything is loaded, show the comments.
- * @param {User} user - User object from firebase
+ * @param {User | null} user - User object from firebase
  * @param {Post} selectedPost - Post object from firebase
  * @param {string} communityId - id of the community
  *
@@ -85,7 +85,7 @@ const Comments: React.FC<CommentsProps> = ({
       const newComment: Comment = {
         id: commentDocRef.id,
         creatorId: user!.uid,
-        creatorDisplayText: user!.email!.split("@")[0],
+        creatorDisplayText: user!.uid,
         communityId,
         postId: selectedPost?.id!,
         postTitle: selectedPost?.title!,

@@ -1,15 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Community } from "@/atoms/communitiesAtom";
 import { Post } from "@/atoms/postsAtom";
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import usePosts from "@/hooks/usePosts";
 import { Stack } from "@chakra-ui/react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import PostItem from "./PostItem";
 import PostLoader from "../Loaders/PostLoader";
 import useCustomToast from "@/hooks/useCustomToast";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
+import { Text as ChakraText } from "@chakra-ui/react"; // Rename the Text component to avoid conflict
 
 /**
  * @param {Community} communityData - Community object from firebase
@@ -27,7 +27,7 @@ type PostsProps = {
  * @returns {React.FC<PostsProps>} - Posts component
  */
 const Posts: React.FC<PostsProps> = ({ communityData }) => {
-  const [user] = useAuthState(auth);
+  const [user, userLoading, userError, , ] = useSemaphoreAuthState(); 
   const [loading, setLoading] = useState(false);
   const {
     postStateValue,
@@ -76,6 +76,14 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     getPosts();
   }, [communityData]);
 
+  if (userLoading) {
+    return <ChakraText>Loading...</ChakraText>;
+  }
+
+  if (userError) {
+    return <ChakraText>Error: {userError.message}</ChakraText>;
+  }
+
   return (
     <>
       {/* If loading is true, display the post loader component */}
@@ -84,7 +92,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
       ) : (
         // If the posts are available, display the post item components
         <Stack spacing={3}>
-          {/* For each post (item) iterebly create a post car component */}
+          {/* For each post (item) iteratively create a post card component */}
           {postStateValue.posts.map((item) => (
             <PostItem
               key={item.id}
@@ -104,4 +112,5 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     </>
   );
 };
+
 export default Posts;
