@@ -1,4 +1,5 @@
-<img width="1000" alt="cover" src="https://github.com/mbeps/next_discussion_platform/assets/58662575/21829226-db49-4f91-815c-8af72ff6dacf">
+<img width="1000" alt="cover" src="https://github.com/seree-fam/akoben/blob/cc96634f87b5818b0dacdfb4d97b09f66846f146/public/images/real.png">
+
 
 ---
 
