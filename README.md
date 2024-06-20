@@ -2,29 +2,26 @@
 
 ---
 
-Introducing Akoben, a simple yet powerful discussion platform that enables users to engage with each other in a variety of ways. Our platform is similar to popular sites like Reddit and Quora, but with a range of unique features that set us apart.
+Introducing Akoben, a simple yet powerful discussion platform that enables users to engage with each other in a variety of ways. Our platform is similar to popular sites like Reddit and Quora, but with a range of unique features that set us apart (Decentralisation).
 
 Our platform is designed to promote engagement and collaboration among users, with a wide range of community management features that enable users to create, subscribe to, and interact with communities on a variety of topics. We also provide a range of features to make it easy for users to create and view posts, including options for images, voting, and sharing.
 
-In addition, we provide a robust set of user authentication and account management features, ensuring that our users have a seamless and secure experience. Users can sign up using email and password or third-party authentication providers such as Google and GitHub, log in and out, reset their password, and modify their profiles.
+In addition, we provide a robust set of user authentication and account management features, ensuring that our users have a seamless and secure experience. Users can sign up using Semaphore Id.
 
-Our platform is also designed to be user-friendly and accessible, with a responsive UI that can be used on smartphones, tablets, or computers. Whether you're an experienced user or just getting started, Circus has everything you need to engage with others and explore new ideas.
+Our platform is also designed to be user-friendly and accessible, with a responsive UI that can be used on smartphones, tablets, or computers. Whether you're an experienced user or just getting started, Akoben has everything you need to engage with others and explore new ideas.
 
 # **Requirements**
 These are the requirements needed to run the project:
 - Node 18 LTS
 - Next.JS 12+
 - Firebase V9
+- Semaphore
+
 
 # **Features**
 ## **Authentication and Account Management**
-The system has several key user authentication and account management features designed to ensure that users have a seamless and secure experience:
-- Users can sign up using email and password
-- Users can sign up using third-party authentication providers such as Google and GitHub
-- Users can log in using email and password
-- Users can log out
-- Users can reset their password
-- Users can modify their profiles (profile image and username)
+The system leverages Semaphore ZK proofs to manage user authentication and account management features designed to ensure that users have a seamless and secure experience:
+- Users can sign up using Semaphore ID.
 
 ## **Community**
 The system has several key community management features designed to promote engagement and collaboration among users:
@@ -37,7 +34,7 @@ The system has several key community management features designed to promote eng
 ## **Posts**
 The system has several key features designed to make it easy for users to create and view posts within communities:
 - Users can create a post in a specific community with an optional image
-- Users can view all posts from a community
+- Users can view all posts from a community that they been invited to.
 - Users can open post to interact with them
 - Users can view posts from subscribed communities
 - Users can delete a post they have created
@@ -53,7 +50,6 @@ The web application has several key features designed to make it easy for users 
 ## **General**
 The system has several general features to make the site user-friendly and accessible:
 - Logged-in users can view posts from various communities they are subscribed to in the home feed
-- Logged-out users can view posts from all communities in order of likes
 - System UI is responsive, hence it can be used on smartphones, tablets, or computers
 
 # **Stack**
@@ -69,12 +65,11 @@ These are the main technologies that were used in this project:
 ## **Back-End**
 - [**Firebase**](https://firebase.google.com/): Firebase is a mobile and web application development platform that provides a range of tools and services to help developers build high-quality apps quickly and easily. Firebase offers features such as real-time database, cloud storage, authentication, hosting, and more, all of which can be easily integrated into your Next.js app.
 
-# **Running Application Locally**
-These are simple steps to run the application locally. For more detail instructions, refer to the [Wiki](https://github.com/mbeps/next_discussion_platform/wiki). 
+- [**Semaphore**](https://semaphore.pse.dev/): Semaphore is a protocol for Web2 and Web3. It integrates into any front-end framework or pure HTML/CSS/JS. It is cross-chain compatible with EVM, L2s, and alt-blockchains. It  leverages Zero Knowledge, allowing us to verify information without revealing any underlying data. This powerful primitive allows one to prove membership and signal anonymously.
 
 ## 1. **Clone the Project Locally**
 ```sh
-git clone https://github.com/mbeps/next_discussion_platform.git
+git clone https://github.com/seree-fam/akoben.git
 ```
 
 ## 2. **Set Up Environment**
@@ -122,8 +117,9 @@ Once everything is ready, use the command bellow to run the application.
 docker-compose -f docker/docker-compose.yml up --build
 ```
 
-# **Demo**
-This video demonstrates the features and functionality of the project. 
+# **Flow**
+This workflow demonstrates the features and functionality of the project.
 
-https://user-images.githubusercontent.com/58662575/236821702-25dfb59c-162f-4de5-af8f-e0e7b8315aae.mp4
+   (https://excalidraw.com/#room=9ea6caf8ab068b5d4ab4,mQyfmZ1CW96lwVziFQIuyQ)
+
 
