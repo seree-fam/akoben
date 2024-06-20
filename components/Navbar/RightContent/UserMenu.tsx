@@ -1,7 +1,6 @@
 import { authModalState } from "@/atoms/authModalAtom";
 import CustomMenuButton from "@/components/atoms/CustomMenuButton";
 import ProfileModal from "@/components/Modal/Profile/ProfileModal";
-import { auth } from "@/firebase/clientApp";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import {
   Flex,
@@ -13,12 +12,13 @@ import {
   Text,
   Image,
 } from "@chakra-ui/react";
-import { signOut, User } from "firebase/auth";
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { MdAccountCircle, MdOutlineLogin } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { useSetRecoilState } from "recoil";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
+import { User } from "@/components/User/User";
 
 /**
  * @param {User | null} user - user currently logged in if any
@@ -57,11 +57,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
    * Toggles the menu open and closed.
    */
   const toggle = () => {
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    } else {
-      setIsMenuOpen(true);
-    }
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
@@ -154,7 +150,7 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
             mr={2}
           >
             <Text fontWeight={700}>
-              {user?.displayName || user.email?.split("@")[0]}
+              {user?.displayName || user.uid}
             </Text>
           </Flex>
         </>
@@ -173,7 +169,6 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
 interface UserMenuListProps {
   user: User | null | undefined;
   setProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  //todo pass open profile modal function
 }
 
 /**
@@ -194,14 +189,15 @@ const UserMenuList: React.FC<UserMenuListProps> = ({
   setProfileModalOpen,
 }) => {
   const setAuthModalState = useSetRecoilState(authModalState);
-
+  const [, , , , setUser] = useSemaphoreAuthState();
+  
   /**
    * Signs the user out of the app.
    * Once logged out, the state of the current logged in user is cleared globally.
    * This means that the community state is also reset updating the UI.
    */
   const logout = async () => {
-    await signOut(auth);
+    setUser(null); // Set user to null to log out
     // clear community state so that after logging out the button subscribe button resets
   };
 

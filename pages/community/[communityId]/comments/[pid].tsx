@@ -5,16 +5,15 @@ import PageContent from "@/components/Layout/PageContent";
 import PostLoader from "@/components/Loaders/PostLoader";
 import Comments from "@/components/Posts/Comments/Comments";
 import PostItem from "@/components/Posts/PostItem";
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import useCustomToast from "@/hooks/useCustomToast";
 import usePosts from "@/hooks/usePosts";
 import { Stack } from "@chakra-ui/react";
 import { doc, getDoc } from "@firebase/firestore";
-import { User } from "firebase/auth";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the custom hook
 
 /**
  * Displays a single post.
@@ -26,10 +25,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
  * @returns {React.FC} - Single post page with all components
  */
 const PostPage: React.FC = () => {
-  const { postStateValue, setPostStateValue, onDeletePost, onVote } =
-    usePosts();
+  const { postStateValue, setPostStateValue, onDeletePost, onVote } = usePosts();
   const { communityStateValue } = useCommunityData();
-  const [user] = useAuthState(auth);
+  const [user, loading, error, , ] = useSemaphoreAuthState();
   const router = useRouter();
   const showToast = useCustomToast();
   const [hasFetched, setHasFetched] = useState(false);
@@ -75,6 +73,7 @@ const PostPage: React.FC = () => {
       setPostLoading(false);
     }
   };
+
   /**
    * Fetch post data if the state is empty and the post ID is available.
    * This is to prevent fetching the post data when the user is on the community page.
@@ -126,7 +125,7 @@ const PostPage: React.FC = () => {
               )}
 
               <Comments
-                user={user as User}
+                user={user || undefined}
                 selectedPost={postStateValue.selectedPost}
                 communityId={postStateValue.selectedPost?.communityId as string}
               />

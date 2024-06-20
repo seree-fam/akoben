@@ -38,4 +38,5 @@ next-env.d.ts
 # vscode
 .vscode/*
 
+.env
 package-lock.json"config/serviceAccountKey.json" 

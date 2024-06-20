@@ -1,11 +1,11 @@
-import AuthModal from "@/components/Modal/Auth/AuthModal";
 import { Flex } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { User } from "@/components/User/User";
 import React from "react";
 import AuthButtons from "./AuthButtons";
 import Icons from "./Icons";
 import LogOutButton from "./LogOutButton";
 import UserMenu from "./UserMenu";
+import AuthModal from "@/components/Modal/Auth/AuthModal";
 
 type RightContentProps = {
   user?: User | null;

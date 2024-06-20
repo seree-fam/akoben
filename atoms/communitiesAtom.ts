@@ -4,7 +4,7 @@ import { atom } from "recoil";
 /**
  * Interface representing a community.
  * @property {string} id - unique identifier for the community
- * @property {string} creatorId - unique identifier for the user who created the community
+ * @property {string} creatorId - semaphore id for the user who created the community
  * @property {number} numberOfMembers - number of members in the community
  * @property {"public" | "restricted" | "private"} privacyType - privacy type of the community
  * @property {Timestamp} createdAt - timestamp of when the community was created
