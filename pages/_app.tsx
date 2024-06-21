@@ -1,9 +1,11 @@
+// _app.tsx
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { theme } from "@/chakra/theme";
 import Layout from "@/components/Layout/Layout";
 import { RecoilRoot } from "recoil";
 import Head from "next/head";
+import { UserProvider } from "@/components/User/UserContext";
 
 /**
  * Represents the entire application.
@@ -16,12 +18,14 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
       <ChakraProvider theme={theme}>
-        <Layout>
-          <Head>
-            <title>Akoben</title>
-          </Head>
-          <Component {...pageProps} />
-        </Layout>
+        <UserProvider>
+          <Layout>
+            <Head>
+              <title>Akoben</title>
+            </Head>
+            <Component {...pageProps} />
+          </Layout>
+        </UserProvider>
       </ChakraProvider>
     </RecoilRoot>
   );
