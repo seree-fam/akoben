@@ -3,9 +3,10 @@ import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { theme } from "@/chakra/theme";
 import Layout from "@/components/Layout/Layout";
-import { RecoilRoot } from "recoil";
+import { RecoilRoot, useRecoilCallback } from "recoil";
 import Head from "next/head";
 import { UserProvider } from "@/components/User/UserContext";
+import { authModalState } from "@/atoms/authModalAtom";
 
 /**
  * Represents the entire application.
@@ -15,6 +16,15 @@ import { UserProvider } from "@/components/User/UserContext";
  * @returns App component
  */
 export default function App({ Component, pageProps }: AppProps) {
+
+  const resetRecoilState = useRecoilCallback(({ reset }) => () => {
+    reset(authModalState);
+  });
+  
+  if (typeof window !== "undefined") {
+    localStorage.clear();
+  }
+
   return (
     <RecoilRoot>
       <ChakraProvider theme={theme}>
