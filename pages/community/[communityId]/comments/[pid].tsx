@@ -99,46 +99,49 @@ const PostPage: React.FC = () => {
   }, [postStateValue.selectedPost, router.query, hasFetched, postExists]);
 
   return (
+    <>
     <PageContent>
-      {/* Left */}
-      <>
-        {postLoading ? (
-          <PostLoader />
-        ) : (
-          <>
-            <Stack spacing={3} direction="column">
-              {postStateValue.selectedPost && (
-                <PostItem
-                  post={postStateValue.selectedPost}
-                  onVote={onVote}
-                  onDeletePost={onDeletePost}
-                  userVoteValue={
-                    postStateValue.postVotes.find(
-                      (item) => item.postId === postStateValue.selectedPost?.id
-                    )?.voteValue
-                  }
-                  userIsCreator={
-                    user?.uid === postStateValue.selectedPost?.creatorId
-                  }
-                  showCommunityImage={true}
-                />
-              )}
-
-              <Comments
-                user={user || undefined}
-                selectedPost={postStateValue.selectedPost}
-                communityId={postStateValue.selectedPost?.communityId as string}
+    {/* Left */}
+    <>
+      {postLoading ? (
+        <PostLoader />
+      ) : (
+        <>
+          <Stack spacing={3} direction="column">
+            {postStateValue.selectedPost && (
+              <PostItem
+                post={postStateValue.selectedPost}
+                onVote={onVote}
+                onDeletePost={onDeletePost}
+                userVoteValue={
+                  postStateValue.postVotes.find(
+                    (item) => item.postId === postStateValue.selectedPost?.id
+                  )?.voteValue
+                }
+                userIsCreator={
+                  user?.uid === postStateValue.selectedPost?.creatorId
+                }
+                showCommunityImage={true}
               />
-            </Stack>
-          </>
-        )}
-      </>
-      {communityStateValue.currentCommunity && (
-        <About communityData={communityStateValue.currentCommunity} />
+            )}
+
+            <Comments
+              user={user || undefined}
+              selectedPost={postStateValue.selectedPost}
+              communityId={postStateValue.selectedPost?.communityId as string}
+            />
+          </Stack>
+        </>
       )}
-      {/* Right */}
-      <></>
-    </PageContent>
+    </>
+    {communityStateValue.currentCommunity && (
+      <About communityData={communityStateValue.currentCommunity} />
+    )}
+    {/* Right */}
+    <></>
+  </PageContent>
+    </>
+   
   );
 };
 export default PostPage;

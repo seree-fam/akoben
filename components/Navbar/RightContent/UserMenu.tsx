@@ -150,8 +150,9 @@ const UserMenuButton: React.FC<UserMenuButtonProps> = ({
             mr={2}
           >
             <Text fontWeight={700}>
-              {user?.displayName || user.uid}
+              {user?.displayName ? `${user.displayName.slice(0, 3)}...` : `${user.uid.slice(0, 3)}...`}
             </Text>
+
           </Flex>
         </>
       ) : (

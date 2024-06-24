@@ -1,3 +1,4 @@
+'use client'
 import { Post } from "@/atoms/postsAtom";
 import useCustomToast from "@/hooks/useCustomToast";
 import {
