@@ -85,7 +85,7 @@ const Comments: React.FC<CommentsProps> = ({
       const newComment: Comment = {
         id: commentDocRef.id,
         creatorId: user!.uid,
-        creatorDisplayText: user!.uid,
+        creatorDisplayText:  user!.uid.slice(0, 3) + `...`,
         communityId,
         postId: selectedPost?.id!,
         postTitle: selectedPost?.title!,

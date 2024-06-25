@@ -19,6 +19,7 @@ import { VscAccount } from "react-icons/vsc";
 import { useSetRecoilState } from "recoil";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 import { User } from "@/components/User/User";
+import CryptoJS from 'crypto-js';
 
 /**
  * @param {User | null} user - user currently logged in if any
@@ -102,68 +103,58 @@ interface UserMenuButtonProps {
  *
  * @returns {React.FC} - user menu button
  */
-const UserMenuButton: React.FC<UserMenuButtonProps> = ({
-  user,
-  isMenuOpen,
-}) => (
-  <MenuButton
-    cursor="pointer"
-    height="100%"
-    padding="0px 6px"
-    borderRadius={10}
-    _hover={{
-      outline: "1px solid",
-      outlineColor: "gray.200",
-    }}
-    maxWidth="150px"
-  >
-    <Flex align="center">
-      {user ? (
-        // If user is authenticated, display user icon and name
-        <>
-          {user.photoURL ? (
-            <>
-              <Image
-                src={user.photoURL}
-                alt="User Profile Photo"
-                height="30px"
-                borderRadius="full"
-                mr={1}
-              />
-            </>
-          ) : (
-            <>
-              <Icon
-                fontSize={30}
-                mr={1}
-                color="gray.300"
-                as={MdAccountCircle}
-              />
-            </>
-          )}
 
-          <Flex
-            direction="column"
-            display={{ base: "none", lg: "flex" }}
-            fontSize="8pt"
-            align="flex-start"
-            mr={2}
-          >
-            <Text fontWeight={700}>
-              {user?.displayName ? `${user.displayName.slice(0, 3)}...` : `${user.uid.slice(0, 3)}...`}
-            </Text>
 
-          </Flex>
-        </>
-      ) : (
-        // If user is unauthenticated, display generic user icon
-        <Icon fontSize={24} color="gray.400" mr={1} as={VscAccount} />
-      )}
-      {isMenuOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
-    </Flex>
-  </MenuButton>
-);
 
+
+const UserMenuButton: React.FC<UserMenuButtonProps> = ({ user, isMenuOpen }) => {
+  const imageUrl = `https://robohash.org/${user?.uid}.png?set=set5`; // Random image based on user UID
+  
+
+  return (
+    <MenuButton
+      cursor="pointer"
+      height="100%"
+      padding="0px 6px"
+      borderRadius={10}
+      _hover={{
+        outline: "1px solid",
+        outlineColor: "gray.200",
+      }}
+      maxWidth="150px"
+    >
+      <Flex align="center">
+        {user ? (
+          // If user is authenticated, display user icon and name
+          <>
+            <Image
+              src={imageUrl}
+              alt="User Profile Photo"
+              height="30px"
+              borderRadius="full"
+              mr={1}
+            />
+            <Flex
+              direction="column"
+              display={{ base: "none", lg: "flex" }}
+              fontSize="8pt"
+              align="flex-start"
+              mr={2}
+            >
+              <Text fontWeight={700}>
+                {user?.displayName ? `${user.displayName.slice(0, 3)}...` : `${user.uid.slice(0, 3)}...`}
+              </Text>
+            </Flex>
+          </>
+        ) : (
+          // If user is unauthenticated, display generic user icon
+          <Icon fontSize={24} color="gray.400" mr={1} as={VscAccount} />
+        )}
+        {isMenuOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+      </Flex>
+    </MenuButton>
+  );
+};
 /**
  * @param {User} user - current user
  */
@@ -208,11 +199,13 @@ const UserMenuList: React.FC<UserMenuListProps> = ({
         <Stack spacing={1} width="95%">
           {user ? (
             <>
-              <CustomMenuButton
-                icon={<CgProfile />}
-                text="Profile"
-                onClick={() => setProfileModalOpen(true)}
-              />
+              {
+  /* <CustomMenuButton
+    icon={<CgProfile />}
+    text="Profile"
+    onClick={() => setProfileModalOpen(true)}
+  /> */
+}
 
               <CustomMenuButton
                 icon={<MdOutlineLogin />}
