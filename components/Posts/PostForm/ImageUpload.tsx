@@ -65,7 +65,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           align="center"
           p={20}
           border="1px dashed"
-          borderColor="red.200"
+          borderColor="green.200"
           width="100%"
           borderRadius={10}
         >

@@ -31,7 +31,7 @@ const icons: React.FC = () => {
           icon={VscGithub}
           fontSize={20}
           onClick={() => {
-            router.push("https://github.com/mbeps/next_discussion_platform");
+            router.push("https://github.com/seree-fam/akoben");
           }}
         />
       </Flex>

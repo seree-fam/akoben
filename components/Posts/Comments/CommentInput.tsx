@@ -67,7 +67,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
               }}
               onClick={() => setProfileModalOpen(true)}
             >
-              {user?.uid}
+              {user?.displayName ? `${user.displayName.slice(0, 3)}...` : `${user.uid.slice(0, 3)}...`}
             </Text>
           </Stack>
 

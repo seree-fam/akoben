@@ -71,13 +71,13 @@ const TextInputs: React.FC<TextInputsProps> = ({
         _hover={{
           bg: "white",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: "green.500",
         }}
         _focus={{
           outline: "none",
           bg: "white",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: "green.500",
         }}
       />
       <Flex justify="flex-end">
