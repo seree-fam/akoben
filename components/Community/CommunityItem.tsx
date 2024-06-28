@@ -101,7 +101,7 @@ const CommunityItemNameIconSection = ({
           <Icon
             as={IoPeopleCircleOutline}
             fontSize={38}
-            color="red.500"
+            color="green.500"
             mr={4}
           />
         )}

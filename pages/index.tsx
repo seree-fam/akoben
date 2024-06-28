@@ -1,144 +1,214 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Post } from "@/atoms/postsAtom";
-import About from "@/components/Community/About";
+import { Post, PostVote } from "@/atoms/postsAtom";
+import CreatePostLink from "@/components/Community/CreatePostLink";
+import PersonalHome from "@/components/Community/PersonalHome";
+import Recommendations from "@/components/Community/Recommendations";
 import PageContent from "@/components/Layout/PageContent";
 import PostLoader from "@/components/Loaders/PostLoader";
-import Comments from "@/components/Posts/Comments/Comments";
 import PostItem from "@/components/Posts/PostItem";
 import { firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import useCustomToast from "@/hooks/useCustomToast";
 import usePosts from "@/hooks/usePosts";
 import { Stack } from "@chakra-ui/react";
-import { doc, getDoc } from "@firebase/firestore";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { Inter } from "@next/font/google";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 
-/**
- * Displays a single post.
- * Contains:
- *  - PostItem component
- *  - About component
- *  - Comments component
- *
- * @returns {React.FC} - Single post page with all components
- */
-const PostPage: React.FC = () => {
-  const { postStateValue, setPostStateValue, onDeletePost, onVote } = usePosts();
-  const { communityStateValue } = useCommunityData();
+const inter = Inter({ subsets: ["latin"] });
+
+export default function Home() {
   const [user, loading, error, , ] = useSemaphoreAuthState(); 
-  const router = useRouter();
+  const [, setLoading] = useState(false);
+  const { communityStateValue } = useCommunityData();
+  const {
+    setPostStateValue,
+    postStateValue,
+    onSelectPost,
+    onVote,
+    onDeletePost,
+  } = usePosts();
   const showToast = useCustomToast();
-  const [hasFetched, setHasFetched] = useState(false);
-  const [postExists, setPostExists] = useState(true);
-  const [postLoading, setPostLoading] = useState(false);
 
   /**
-   * The necessary data for this page should be passed as props from the previous page.
-   * If the user navigates to this page directly (using link), the data will not be available.
-   * This function fetches the data from Firebase and populates the state.
-   * The function checks if the post exists.
-   *
-   * @param {string} postId  - Post ID for the post to be fetched
+   * Creates a home feed for a currently logged in user.
+   * If the user is a member of any communities, it will display posts from those communities.
+   * If the user is not a member of any communities, it will display generic posts.
    */
-  const fetchPost = async (postId: string) => {
-    setPostLoading(true);
-    try {
-      setHasFetched(false); // Reset fetching attempt status
-      const postDocRef = doc(firestore, "posts", postId); // Get post document reference
-      const postDoc = await getDoc(postDocRef); // Get post document
+  const buildUserHomeFeed = async () => {
+    setLoading(true);
 
-      if (postDoc.exists()) {
-        // If post exists
+    try {
+      if (communityStateValue.mySnippets.length) {
+        const myCommunityIds = communityStateValue.mySnippets.map(
+          (snippet) => snippet.communityId
+        ); // get all community ids that the user is a member of
+        const postQuery = query(
+          collection(firestore, "posts"),
+          where("communityId", "in", myCommunityIds),
+          // orderBy("voteStatus", "desc"),
+          limit(10)
+        ); // get all posts in community with certain requirements
+        const postDocs = await getDocs(postQuery);
+        const posts = postDocs.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })); // get all posts in community
+
         setPostStateValue((prev) => ({
           ...prev,
-          selectedPost: { id: postDoc.id, ...(postDoc.data() as Post) },
-        })); // Set post state
-        setPostExists(true); // Set post existence to true
+          posts: posts as Post[],
+        })); // set posts in state
       } else {
-        // If post does not exist
-        setPostExists(false); // Set post existence to false if post not found
+        buildGenericHomeFeed();
       }
     } catch (error) {
-      console.log("Error: fetchPost", error);
       showToast({
-        title: "Could not Find Posts",
-        description: "There was an error finding posts",
+        title: "Could not Build Home Feed",
+        description: "There was an error while building your home feed",
         status: "error",
       });
-      setPostExists(false); // Set post existence to false on error
     } finally {
-      setHasFetched(true); // Set fetching attempt status to true when finished
-      setPostLoading(false);
+      setLoading(false);
     }
   };
 
   /**
-   * Fetch post data if the state is empty and the post ID is available.
-   * This is to prevent fetching the post data when the user is on the community page.
-   * The post data is already available in the state.
-   *
-   * Runs when the page is loaded, when the post ID changes, and when the post state changes.
-   * Checks if the post data is available in the state (when the user navigates to this page from another page).
-   * If the post state is empty due the user navigating to the page directly, it will fetch the post data.
-   * if the post data is not valid, it will redirect to the `404` page.
+   * Creates a generic home feed for a user that is not logged in.
+   */
+  const buildGenericHomeFeed = async () => {
+    setLoading(true);
+    try {
+      const postQuery = query(
+        collection(firestore, "posts"),
+        orderBy("voteStatus", "desc"),
+        limit(10)
+      ); // get all posts in community with certain requirements
+
+      const postDocs = await getDocs(postQuery); // get all posts in community
+      const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() })); // get all posts in community
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: posts as Post[],
+      })); // set posts in state
+    } catch (error) {
+      console.log("Error: buildGenericHomeFeed", error);
+      showToast({
+        title: "Could not Build Home Feed",
+        description: "There was an error while building your home feed",
+        status: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Gets the votes for the posts that are currently in the home feed.
+   */
+  const getUserPostVotes = async () => {
+    try {
+      const postIds = postStateValue.posts.map((post) => post.id); // get all post ids in home feed
+      const postVotesQuery = query(
+        collection(firestore, `users/${user?.uid}/postVotes`),
+        where("postId", "in", postIds)
+      ); // get all post votes for posts in home feed
+      const postVoteDocs = await getDocs(postVotesQuery);
+      const postVotes = postVoteDocs.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })); // get all post votes for posts in home feed
+
+      setPostStateValue((prev) => ({
+        ...prev,
+        postVotes: postVotes as PostVote[],
+      })); // set post votes in state
+    } catch (error) {
+      console.log("Error: getUserPostVotes", error);
+      showToast({
+        title: "Could not Get Post Votes",
+        description: "There was an error while getting your post votes",
+        status: "error",
+      });
+    }
+  };
+
+  /**
+   * Loads the home feed for authenticated users.
+   * Runs when the community snippets have been fetched when the user
    */
   useEffect(() => {
-    const { pid } = router.query;
-
-    if (pid && !postStateValue.selectedPost) {
-      fetchPost(pid as string);
+    if (communityStateValue.mySnippets) {
+      buildUserHomeFeed();
     }
+  }, [communityStateValue.snippetFetched]);
 
-    // If fetching attempt has been completed and post does not exist, redirect to `NotFound` page
-    if (hasFetched && !postExists) {
-      router.push("/404");
-      return;
+  /**
+   * Loads the home feed for unauthenticated users.
+   * Runs when there is no user and the system is no longer attempting to fetch a user.
+   * While the system is attempting to fetch user, the user is null.
+   */
+  useEffect(() => {
+    if (!user && !loading) {
+      buildGenericHomeFeed();
     }
-  }, [postStateValue.selectedPost, router.query, hasFetched, postExists]);
+  }, [user, loading]);
+
+  /**
+   * Posts need to exist before trying to fetch votes for posts
+   */
+  useEffect(() => {
+    if (user && postStateValue.posts.length) {
+      getUserPostVotes();
+
+      return () => {
+        setPostStateValue((prev) => ({
+          ...prev,
+          postVotes: [],
+        }));
+      };
+    }
+  }, [user, postStateValue.posts]);
 
   return (
     <PageContent>
-      {/* Left */}
       <>
-        {postLoading ? (
+        <CreatePostLink />
+        {loading ? (
           <PostLoader />
         ) : (
-          <>
-            <Stack spacing={3} direction="column">
-              {postStateValue.selectedPost && (
-                <PostItem
-                  post={postStateValue.selectedPost}
-                  onVote={onVote}
-                  onDeletePost={onDeletePost}
-                  userVoteValue={
-                    postStateValue.postVotes.find(
-                      (item) => item.postId === postStateValue.selectedPost?.id
-                    )?.voteValue
-                  }
-                  userIsCreator={
-                    user?.uid === postStateValue.selectedPost?.creatorId
-                  }
-                  showCommunityImage={true}
-                />
-              )}
-
-              <Comments
-                user={user || undefined} // Ensure user is either User or undefined
-                selectedPost={postStateValue.selectedPost}
-                communityId={postStateValue.selectedPost?.communityId as string}
+          <Stack spacing={3}>
+            {postStateValue.posts.map((post) => (
+              <PostItem
+                key={post.id}
+                post={post}
+                onSelectPost={onSelectPost}
+                onDeletePost={onDeletePost}
+                onVote={onVote}
+                userVoteValue={
+                  postStateValue.postVotes.find(
+                    (item) => item.postId === post.id
+                  )?.voteValue
+                }
+                userIsCreator={user?.uid === post.creatorId}
+                showCommunityImage={true}
               />
-            </Stack>
-          </>
+            ))}
+          </Stack>
         )}
       </>
-      {communityStateValue.currentCommunity && (
-        <About communityData={communityStateValue.currentCommunity} />
-      )}
-      {/* Right */}
-      <></>
+      <Stack spacing={2}>
+        <Recommendations />
+        <PersonalHome />
+      </Stack>
     </PageContent>
   );
-};
-export default PostPage;
+}

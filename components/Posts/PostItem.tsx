@@ -315,9 +315,11 @@ const PostDetails = ({ showCommunityImage, post }: PostDetailsProps) => {
    * Text to be displayed on top of the post.
    * Displays the author and the time of creation.
    */
-  const topText: string = `By ${post.creatorUsername} ${moment(
-    new Date(post.createTime.seconds * 1000)
-  ).fromNow()}`;
+  let topText = "By " + post.creatorUsername;
+
+  if (post.createTime && post.createTime.seconds) {
+    const postDate = new Date(post.createTime.seconds * 1000);
+    topText += ` ${moment(postDate).fromNow()}`;}
   return (
     <Stack
       direction="row"
@@ -344,7 +346,7 @@ const PostDetails = ({ showCommunityImage, post }: PostDetailsProps) => {
               as={IoPeopleCircleOutline}
               mr={1}
               fontSize="18pt"
-              color="red.500"
+              color="green.500"
             />
           )}
           <Link href={`/community/${post.communityId}`}>

@@ -89,7 +89,7 @@ const AboutHeaderBar: React.FC<AboutHeaderBarProps> = ({ communityName }) => (
   <Flex
     justify="space-between"
     align="center"
-    bg="red.500"
+    bg="green.500"
     color="white"
     p={3}
     borderRadius="10px 10px 0px 0px"
