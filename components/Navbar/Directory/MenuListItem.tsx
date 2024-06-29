@@ -62,7 +62,7 @@ const MenuListItem: React.FC<MenuListItemProps> = ({
     >
       <Flex align="center">
         <Image
-          src={imageURL ? imageURL : "/images/logo.svg"}
+          src={imageURL ? imageURL : "/images/logo.png"}
           alt="Community logo"
           borderRadius="full"
           boxSize="18px"
