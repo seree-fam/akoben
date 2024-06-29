@@ -80,7 +80,7 @@ const Communities: React.FC<CommunitiesProps> = () => {
             icon={IoPeopleCircleOutline}
             displayText={snippet.communityId}
             link={`/community/${snippet.communityId}`}
-            iconColor={"red.500"}
+            iconColor={"green.500"}
             imageURL={snippet.imageURL}
           />
         ))}

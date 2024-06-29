@@ -63,7 +63,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
               _hover={{
                 cursor: "pointer",
                 textDecoration: "underline",
-                textColor: "red.500",
+                textColor: "green.500",
               }}
               onClick={() => setProfileModalOpen(true)}
             >
@@ -84,7 +84,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
             _focus={{
               outline: "none",
               bg: "white",
-              border: "1px solid red",
+              border: "1px solid green",
             }}
           />
 

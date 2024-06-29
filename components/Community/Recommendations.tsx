@@ -65,10 +65,10 @@ const SuggestionsHeader: React.FC = () => {
       height="70px"
       borderRadius="10px 10px 0px 0px"
       fontWeight={700}
-      bgImage="url(/images/banners/large.png)"
+      bgImage="url(/images/banners/small.jpg)"
       backgroundSize="cover"
       bgGradient="linear-gradient(to bottom, rgba(139, 0, 0, 0), rgba(139, 0, 0, 0.75)),
-        url('/images/banners/large.png')"
+        url('/images/banners/small.jpg')"
     >
       Top Communities
     </Flex>
@@ -165,7 +165,7 @@ const SuggestedCommunitiesList: React.FC = () => {
                         <Icon
                           as={IoPeopleCircleOutline}
                           fontSize={34}
-                          color="red.500"
+                          color="green.500"
                           mr={1}
                         />
                       )}

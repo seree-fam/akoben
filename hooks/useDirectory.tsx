@@ -73,7 +73,7 @@ const useDirectory = () => {
           link: `community/${currentCommunity?.id}`,
           imageURL: currentCommunity?.imageURL,
           icon: IoPeopleCircleOutline,
-          iconColor: "red.500",
+          iconColor: "green.500",
         },
       }));
     } else if (router.pathname === "/communities") {
@@ -85,7 +85,7 @@ const useDirectory = () => {
           link: "/communities",
           imageURL: "",
           icon: IoPeopleCircleOutline,
-          iconColor: "red.500",
+          iconColor: "green.500",
         },
       }));
     }

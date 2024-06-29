@@ -34,7 +34,7 @@ const PersonalHome: React.FC = () => {
           align="flex-end"
           color="white"
           p="6px 10px"
-          bg="blue.500"
+          bg="url(/images/banners/small.jpg)"
           height="34px"
           borderRadius="10px 10px 0px 0px"
           fontWeight={600}

@@ -87,12 +87,12 @@ const CommentItem: React.FC<CommentItemProps> = ({
           >
             {userId === comment.creatorId && (
               <>
-                <Text fontSize="10pt" _hover={{ color: "red.500" }}>
+                <Text fontSize="10pt" _hover={{ color: "green.500" }}>
                   Edit
                 </Text>
                 <Text
                   fontSize="10pt"
-                  _hover={{ color: "red.500" }}
+                  _hover={{ color: "green.500" }}
                   onClick={() => onDeleteComment(comment)}
                 >
                   Delete
