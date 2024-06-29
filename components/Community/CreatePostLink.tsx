@@ -43,7 +43,7 @@ const CreatePostLink: React.FC<CreatePostProps> = () => {
           outline: "none",
           bg: "white",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: "green.500",
         }}
         bg="gray.50"
         borderColor="gray.200"

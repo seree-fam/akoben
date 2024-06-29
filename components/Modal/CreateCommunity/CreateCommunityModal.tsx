@@ -307,7 +307,7 @@ const CommunityTypeOption: FC<CommunityTypeOptionProps> = ({
       name={name}
       isChecked={isChecked}
       onChange={onChange}
-      colorScheme="red"
+      colorScheme="green"
     >
       <Flex align="center">
         <Icon as={icon} color="gray.500" mr={2} />
@@ -416,24 +416,24 @@ const CommunityNameSection: React.FC<CommunityNameSectionProps> = ({
         _hover={{
           bg: "white",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: "green.500",
         }}
         _focus={{
           outline: "none",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: "green.500",
         }}
       />
       <Text
         fontSize="9pt"
         mt={1}
-        color={charRemaining === 0 ? "red" : "gray.500"}
+        color={charRemaining === 0 ? "green" : "gray.500"}
       >
         {/* Updates the remaining characters in real time
         The colour changes to red if the limit is hit */}
         {charRemaining} Characters remaining
       </Text>
-      <Text fontSize="9pt" color="red" pt={1}>
+      <Text fontSize="9pt" color="green" pt={1}>
         {error}
       </Text>
     </Box>
