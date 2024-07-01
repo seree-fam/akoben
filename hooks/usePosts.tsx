@@ -141,7 +141,7 @@ const usePosts = () => {
       updatedPosts[postIndexPosition] = updatedPost;
       setPostStateValue((prev) => ({
         ...prev,
-        posts: updatedPosts,
+        posts: updatedPosts.sort((a, b) => b.voteStatus - a.voteStatus), // sort posts by vote status
         postVotes: updatedPostVotes,
       })); // update posts and post votes state on the ui
       // allow voting when a post is currently selected
