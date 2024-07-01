@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// AuthModal.tsx
 import { authModalState } from "@/atoms/authModalAtom";
 import {
   Flex,
