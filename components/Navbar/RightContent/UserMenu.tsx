@@ -19,7 +19,7 @@ import { VscAccount } from "react-icons/vsc";
 import { useSetRecoilState } from "recoil";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 import { User } from "@/components/User/User";
-import CryptoJS from 'crypto-js';
+import ColorModeToggle from "@/components/Layout/ColorModeToggle"
 
 /**
  * @param {User | null} user - user currently logged in if any
@@ -63,6 +63,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
 
   return (
     <>
+      <ColorModeToggle/>
       <ProfileModal
         open={isProfileModalOpen}
         handleClose={() => setProfileModalOpen(false)}
