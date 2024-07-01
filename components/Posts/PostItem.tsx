@@ -12,6 +12,8 @@ import {
   Text,
   useClipboard,
   useToast,
+  SkeletonCircle,
+  SkeletonText
 } from "@chakra-ui/react";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -27,6 +29,10 @@ import {
 } from "react-icons/io5";
 import { MdOutlineDelete } from "react-icons/md";
 import PostItemError from "../atoms/ErrorMessage";
+import  { memo } from 'react';
+import { useAuth } from '@/hooks/useAuth'; // Use the useAuth hook
+import { Box } from '@chakra-ui/react'
+
 
 /**
  * @param {Post} post - post object
@@ -72,7 +78,7 @@ type PostItemProps = {
  * @param {boolean} showCommunityImage - whether to show the community image
  * @returns {React.FC<PostItemProps>} - card displaying post
  */
-const PostItem: React.FC<PostItemProps> = ({
+const PostItem: React.FC<PostItemProps> = memo(({
   post,
   userIsCreator,
   userVoteValue,
@@ -87,6 +93,7 @@ const PostItem: React.FC<PostItemProps> = ({
   const router = useRouter();
   const showToast = useCustomToast();
   const { onCopy, value, setValue, hasCopied } = useClipboard("");
+  const { isAuthenticated } = useAuth(); // Use the useAuth hook
   /**
    * If there is no selected post then post is already selected
    */
@@ -167,6 +174,16 @@ const PostItem: React.FC<PostItemProps> = ({
     });
   };
 
+  if (!isAuthenticated) {
+    return <>
+    <Text>You need to be logged in to view posts.</Text>
+    <Box padding='6' boxShadow='lg' bg='white'>
+    <SkeletonCircle size='10' />
+    <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+    </Box>
+  </>
+  }
+
   return (
     <Flex
       border="1px solid"
@@ -222,7 +239,8 @@ const PostItem: React.FC<PostItemProps> = ({
       </Flex>
     </Flex>
   );
-};
+});
+PostItem.displayName = "PostItem";
 export default PostItem;
 
 /**
@@ -263,14 +281,14 @@ const VoteSection: React.FC<VoteSectionProps> = ({
       {/* like button */}
       <Icon
         as={userVoteValue === 1 ? IoArrowUpCircleSharp : IoArrowUpCircleOutline}
-        color={userVoteValue === 1 ? "red.500" : "gray.500"}
+        color={userVoteValue === 1 ? "green.900" : "gray.900"}
         fontSize={22}
         cursor="pointer"
-        _hover={{ color: "red.300" }}
+        _hover={{ color: "green.300" }}
         onClick={(event) => onVote(event, post, 1, post.communityId)}
       />
       {/* number of likes  */}
-      <Text fontSize="12pt" color="gray.600">
+      <Text fontSize="12pt" color="gray.800">
         {post.voteStatus}
       </Text>
       {/* dislike button */}
@@ -280,8 +298,8 @@ const VoteSection: React.FC<VoteSectionProps> = ({
             ? IoArrowDownCircleSharp
             : IoArrowDownCircleOutline
         }
-        color={userVoteValue === -1 ? "red.500" : "gray.500"}
-        _hover={{ color: "red.300" }}
+        color={userVoteValue === -1 ? "green.800" : "gray.500"}
+        _hover={{ color: "green.300" }}
         fontSize={22}
         cursor="pointer"
         onClick={(event) => onVote(event, post, -1, post.communityId)}
@@ -346,7 +364,7 @@ const PostDetails = ({ showCommunityImage, post }: PostDetailsProps) => {
               as={IoPeopleCircleOutline}
               mr={1}
               fontSize="18pt"
-              color="green.500"
+              color="green.800"
             />
           )}
           <Link href={`/community/${post.communityId}`}>
@@ -407,11 +425,12 @@ type PostBodyProps = {
  * @returns {React.FC<PostBodyProps>} - component to display the body of a post
  */
 const PostBody = ({ post, loadingImage, setLoadingImage }: PostBodyProps) => {
+  const postBody = post.body || "No content available"; // Default value
   return (
     <>
       <Text fontSize="12pt">
         {/* only displays the first 30 words for descriptions that are too long */}
-        {post.body.split(" ").slice(0, 30).join(" ")}
+        {postBody.split(" ").slice(0, 30).join(" ")}
       </Text>
       {/* image (if exists) */}
       {post.imageURL && (

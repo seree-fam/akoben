@@ -22,12 +22,13 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [user, loading, error, , ] = useSemaphoreAuthState(); 
-  const [, setLoading] = useState(false);
+  const [user, loading, error,  handleConnectWallet ] = useSemaphoreAuthState(); 
+  const [isLoading, setLoading] = useState(false);
   const { communityStateValue } = useCommunityData();
   const {
     setPostStateValue,
@@ -37,6 +38,16 @@ export default function Home() {
     onDeletePost,
   } = usePosts();
   const showToast = useCustomToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user && !loading) {
+      handleConnectWallet();
+    } else if (user) {
+      buildUserHomeFeed(); // Redirect to home page after login
+    }
+  }, [user, loading, handleConnectWallet, router]);
+
 
   /**
    * Creates a home feed for a currently logged in user.
@@ -182,7 +193,7 @@ export default function Home() {
     <PageContent>
       <>
         <CreatePostLink />
-        {loading ? (
+        {isLoading ? (
           <PostLoader />
         ) : (
           <Stack spacing={3}>

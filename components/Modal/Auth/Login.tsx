@@ -1,19 +1,20 @@
+//Login.tsx
 import React, { useEffect } from "react";
 import { Button, Text } from "@chakra-ui/react";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
+import { useRouter } from 'next/router';
 
 const Login: React.FC = () => {
   const [user, loading, error, handleConnectWallet] = useSemaphoreAuthState();
+  const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !loading) {
       handleConnectWallet();
+    } else if (user) {
+      router.push('/'); // Redirect to home page after login
     }
-  }, [user, loading, handleConnectWallet]);
-
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
+  }, [user, loading, handleConnectWallet, router]);
 
   if (error) {
     return <Text>Error: {error.message}</Text>;
