@@ -1,0 +1,35 @@
+{
+    "name": "@bandada/contracts",
+    "version": "2.3.0",
+    "description": "Bandada smart contracts to manage off-chain groups and verify their zero-knowledge proofs.",
+    "license": "MIT",
+    "files": [
+        "**/*.sol",
+        "*.sol",
+        "LICENSE",
+        "README.md"
+    ],
+    "keywords": [
+        "blockchain",
+        "ethereum",
+        "hardhat",
+        "smart-contracts",
+        "solidity",
+        "zero-knowledge",
+        "zk-snarks",
+        "zero-knowledge-proofs",
+        "proof-of-membership"
+    ],
+    "repository": "https://github.com/seree-fam/akoben",
+    "homepage": "https://github.com/seree-fam/akoben/tree/adeo/backend/contracts/backend/contracts",
+    "bugs": {
+        "url": "https://github.com/seree-fam/akoben.git/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "4.7.3",
+        "@semaphore-protocol/contracts": "3.4.0"
+    }
+}
