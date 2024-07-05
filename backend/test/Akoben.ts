@@ -8,7 +8,7 @@ import { Contract } from "ethers";
 import { Akoben } from "../typechain-types";
 
 describe("Akoben", () => {
-    let akoben:  Contract;
+    let akoben: Contract;
 
     const groupId = formatBytes32String("Name");
     const identities = [0, 1].map((i) => new Identity(i.toString()));
@@ -31,7 +31,7 @@ describe("Akoben", () => {
 
     describe("# updateGroups", () => {
         it("Should update groups", async () => {
-            const transaction = akoben.updateGroups([
+            const transaction = await akoben.updateGroups([
                 {
                     id: groupId,
                     fingerprint: group.root
@@ -60,7 +60,7 @@ describe("Akoben", () => {
 
             const fingerprintDuration = await akoben.fingerprintDuration(groupId);
 
-            expect(duration).to.equal(fingerprintDuration);
+            expect(fingerprintDuration).to.equal(duration);
         });
     });
 });

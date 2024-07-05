@@ -7,7 +7,7 @@
         "start-local-node": "hardhat node & (sleep 1 && yarn compile && yarn deploy:akoben --network localhost)",
         "dev": "yarn start-local-node-if-needed",
         "deploy:akoben": "hardhat deploy:akoben",
-        "verify:akoben": "hardhat verify:bandada",
+        "verify:akoben": "hardhat verify:akoben",
         "deploy:akoben-semaphore": "hardhat deploy:akoben-semaphore",
         "verify:akoben-semaphore": "hardhat verify:akoben-semaphore",
         "test": "hardhat test",
