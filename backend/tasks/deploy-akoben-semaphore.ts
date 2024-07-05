@@ -1,11 +1,11 @@
-import { Contract } from "ethers"
-import { task, types } from "hardhat/config"
+import { Contract } from "ethers";
+import { task, types } from "hardhat/config";
 
-task("deploy:akoben-semaphore", "Deploy a AkobenSemaphore contract")
+task("deploy:akoben-semaphore", "Deploy an AkobenSemaphore contract")
     .addOptionalParam<boolean>("logs", "Print the logs", true, types.boolean)
     .addOptionalParam(
         "akoben",
-        "akoben contract address",
+        "Akoben contract address",
         undefined,
         types.string
     )
@@ -24,66 +24,58 @@ task("deploy:akoben-semaphore", "Deploy a AkobenSemaphore contract")
             },
             { ethers, run }
         ): Promise<Contract> => {
+            // Deploy Pairing library if SemaphoreVerifier address is not provided
             if (!semaphoreVerifierAddress) {
-                const PairingFactory = await ethers.getContractFactory(
-                    "Pairing"
-                )
-                const pairing = await PairingFactory.deploy()
+                const PairingFactory = await ethers.getContractFactory("Pairing");
+                const pairing = await PairingFactory.deploy();
 
-                await pairing.deployed()
+                await pairing.deployed();
 
                 if (logs) {
                     console.info(
-                        `Pairing library has been deployed to: ${pairing.address}`
-                    )
+                        `Pairing library deployed to: ${pairing.address}`
+                    );
                 }
 
-                const SemaphoreVerifierFactory =
-                    await ethers.getContractFactory("SemaphoreVerifier", {
-                        libraries: {
-                            Pairing: pairing.address
-                        }
-                    })
-
-                const semaphoreVerifier =
-                    await SemaphoreVerifierFactory.deploy()
-
-                await semaphoreVerifier.deployed()
+                const SemaphoreVerifierFactory = await ethers.getContractFactory("SemaphoreVerifier", {
+                    libraries: {
+                        Pairing: pairing.address
+                    }
+                });
+                const semaphoreVerifier = await SemaphoreVerifierFactory.deploy();
+                
+                await semaphoreVerifier.deployed();
 
                 if (logs) {
                     console.info(
-                        `SemaphoreVerifier contract has been deployed to: ${semaphoreVerifier.address}`
-                    )
+                        `SemaphoreVerifier deployed to: ${semaphoreVerifier.address}`
+                    );
                 }
 
-                semaphoreVerifierAddress = semaphoreVerifier.address
+                semaphoreVerifierAddress = semaphoreVerifier.address;
             }
 
+            // Deploy Akoben contract if Akoben address is not provided
             if (!akobenAddress) {
-                const akoben = await run("deploy:akoben", {
-                    logs
-                })
-
-                akobenAddress = akoben.address
+                const akoben = await run("deploy:akoben", { logs });
+                akobenAddress = akoben.address;
             }
 
-            const ContractFactory = await ethers.getContractFactory(
-                "AkobenSemaphore"
-            )
+            // Deploy AkobenSemaphore contract
+            const AkobenSemaphoreFactory = await ethers.getContractFactory("AkobenSemaphore");
+            const contract = await AkobenSemaphoreFactory.deploy(semaphoreVerifierAddress, akobenAddress);
 
-            const contract = await ContractFactory.deploy(
-                semaphoreVerifierAddress,
-                akobenAddress
-            )
-
-            await contract.deployed()
+            await contract.deployed();
 
             if (logs) {
                 console.info(
-                    `BandadaSemaphore contract has been deployed to: ${contract.address}`
-                )
+                    `AkobenSemaphore deployed to: ${contract.address}`
+                );
             }
 
-            return contract
+            // Return the contract instance
+            return contract;
         }
-    )
+    );
+
+export {};

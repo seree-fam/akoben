@@ -17,7 +17,7 @@ contract AkobenSemaphore is IAkobenSemaphore {
     /// @dev Initializes the Semaphore verifier used to verify the user's ZK proofs.
     /// @param _verifier: Semaphore verifier address.
     /// @param _akoben: Akoben address.
-    constructor(ISemaphoreVerifier _verifier, IBandada _bandada) {
+    constructor(ISemaphoreVerifier _verifier, IAkoben _akoben) {
         verifier = _verifier;
         akoben = _akoben;
     }

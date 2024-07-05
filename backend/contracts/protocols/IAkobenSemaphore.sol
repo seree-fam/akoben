@@ -5,7 +5,7 @@ pragma solidity ^0.8.4;
 interface IAkobenSemaphore {
     error AkobenSemaphore__YouAreUsingTheSameNullifierTwice();
     error AkobenSemaphore__MerkleTreeRootIsExpired();
-    error AkobeenSemaphore__MerkleTreeRootIsNotPartOfTheGroup();
+    error AkobenSemaphore__MerkleTreeRootIsNotPartOfTheGroup();
 
     /// @dev Emitted when a Semaphore proof is correctly verified.
     /// @param groupId: Id of the group.

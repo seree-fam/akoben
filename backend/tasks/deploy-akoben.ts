@@ -1,21 +1,16 @@
-import { Contract } from "ethers"
-import { task, types } from "hardhat/config"
+import { task } from "hardhat/config";
+import { Contract } from "ethers";
 
-task("deploy:akoben", "Deploy a Akoben contract")
-    .addOptionalParam<boolean>("logs", "Print the logs", true, types.boolean)
+task("deploy:akoben", "Deploys the Akoben contract")
+  .setAction(async (taskArgs, hre) => {
+    const Akoben = await hre.ethers.getContractFactory("Akoben");
+    const akoben = await Akoben.deploy();
 
-    .setAction(async ({ logs }, { ethers }): Promise<Contract> => {
-        const ContractFactory = await ethers.getContractFactory("Akoben")
+    await akoben.waitForDeployment();
 
-        const contract = await ContractFactory.deploy()
+    console.log("Contract object:", akoben); // Log the contract object for inspection
 
-        await contract.deployed()
+    console.log("Akoben deployed to:", akoben.target);
 
-        if (logs) {
-            console.info(
-                `Akoben contract has been deployed to: ${contract.address}`
-            )
-        }
-
-        return contract
-    })
+    return akoben;
+  });

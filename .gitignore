@@ -27,20 +27,28 @@ yarn-error.log*
 .pnpm-debug.log*
 
 *yarn.lock
-
+*/.yarn-cache
 # local env files
 .env*.local
 
 # vercel
 .vercel
-
+/cache
+*/cache
+/typechain-types
+*/typechain-types
+/artifacts
+*/artifacts
+/.yarn-cache/v6
+*/.yarn-cache/v6
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
+*.yarn-cache/
 # vscode
 .vscode/*
-
+.yarn-cache/
+/.yarn-cache/
 .env
 package-lock.json"config/serviceAccountKey.json" 
 *package-lock.json

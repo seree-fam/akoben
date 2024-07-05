@@ -1,8 +1,13 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../tsconfig.json",
     "compilerOptions": {
         "target": "es2020",
-        "module": "CommonJS"
+        "module": "CommonJS",
+        "outDir": "./dist",
+        "rootDir": "./",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true
     },
     "include": ["tasks/**/*", "test/**/*", "typechain-types/**/*"],
     "files": ["hardhat.config.ts"]

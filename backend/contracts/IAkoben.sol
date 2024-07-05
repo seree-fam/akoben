@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-/// @title Bandada contract interface.
+/// @title Akoben contract interface.
 interface IAkoben {
     struct Group {
         uint256 id;
