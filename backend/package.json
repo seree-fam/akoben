@@ -25,6 +25,7 @@
         "@nomicfoundation/hardhat-network-helpers": "^1.0.6",
         "@nomicfoundation/hardhat-toolbox": "latest",
         "@nomicfoundation/ignition-core": "^0.15.5",
+        "@nomiclabs/hardhat-ethers": "^2.0.0",
         "@nomiclabs/hardhat-etherscan": "^3.0.0",
         "@semaphore-protocol/group": "3.9.0",
         "@semaphore-protocol/identity": "3.9.0",
@@ -53,9 +54,8 @@
         "@nomicfoundation/hardhat-ethers": "^3.0.0",
         "@nomicfoundation/hardhat-ignition-ethers": "^0.15.0",
         "@nomicfoundation/hardhat-verify": "^2.0.0",
-        "@nomiclabs/hardhat-ethers": "^2.0.0",
         "@openzeppelin/contracts": "4.7.3",
-        "@semaphore-protocol/contracts": "^4.0.0-beta.16",
+        "@semaphore-protocol/contracts": "3.4.0",
         "ethers": "^6.13.1"
     }
 }

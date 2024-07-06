@@ -10,7 +10,6 @@ import "./tasks/verify-akoben"
 import "./tasks/deploy-akoben-semaphore"
 import "./tasks/verify-akoben-semaphore"
 
-
 dotenvConfig()
 
 function getNetworks(): NetworksUserConfig {
