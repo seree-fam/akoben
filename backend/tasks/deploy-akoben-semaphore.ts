@@ -12,7 +12,8 @@ task("deploy:akoben-semaphore", "Deploy an AkobenSemaphore contract")
         if (!semaphoreVerifierAddr) {
             const PairingFactory = await ethers.getContractFactory("Pairing");
             const pairing = await PairingFactory.deploy();
-            await pairing.waitForDeployment();
+            const b = await pairing.waitForDeployment();
+            await b
 
             if (logs) {
                 console.info(`Pairing library deployed to: ${pairing.getAddress()}`);
@@ -24,13 +25,14 @@ task("deploy:akoben-semaphore", "Deploy an AkobenSemaphore contract")
                 }
             });
             const semaphoreVerifier = await SemaphoreVerifierFactory.deploy();
-            await semaphoreVerifier.waitForDeployment();
+            const c = await semaphoreVerifier.waitForDeployment();
+            await c
 
             if (logs) {
-                console.info(`SemaphoreVerifier deployed to: ${semaphoreVerifier.target}`);
+                console.info(`SemaphoreVerifier deployed to: ${semaphoreVerifier.getAddress()}`);
             }
 
-            semaphoreVerifierAddr = semaphoreVerifier.target;
+            semaphoreVerifierAddr = semaphoreVerifier.getAddress();
         }
 
         // Deploy Akoben contract if Akoben address is not provided
@@ -43,10 +45,12 @@ task("deploy:akoben-semaphore", "Deploy an AkobenSemaphore contract")
         // Deploy AkobenSemaphore contract
         const AkobenSemaphoreFactory = await ethers.getContractFactory("AkobenSemaphore");
         const akobenSemaphore = await AkobenSemaphoreFactory.deploy(semaphoreVerifierAddr, akobenAddr);
-        await akobenSemaphore.waitForDeployment();
+        const  a = await akobenSemaphore.waitForDeployment();
+        await a
+        
 
         if (logs) {
-            console.info(`AkobenSemaphore deployed to: ${akobenSemaphore.target}`);
+            console.info(`AkobenSemaphore deployed to: ${akobenSemaphore.getAddress()}`);
         }
         
         // Add a delay or a check to ensure the contracts have been deployed
