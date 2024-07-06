@@ -38,9 +38,7 @@ describe("Akoben", () => {
                 }
             ]);
 
-            await expect(transaction)
-                .to.emit(akoben, "GroupUpdated")
-                .withArgs(groupId, group.root);
+            await expect(akoben.groups(groupId)).to.eventually.equal(group.root);
         });
     });
 
