@@ -1,50 +1,81 @@
 import { Contract } from "ethers";
 import { task, types } from "hardhat/config";
 
-task("deploy:akoben-semaphore", "Deploy a AkobenSemaphore contract")
+task("deploy:akoben-semaphore", "Deploy an AkobenSemaphore contract")
     .addOptionalParam<boolean>("logs", "Print the logs", true, types.boolean)
-    .addOptionalParam("akoben", "akoben contract address", undefined, types.string)
-    .addOptionalParam("semaphoreVerifier", "SemaphoreVerifier contract address", undefined, types.string)
+    .addOptionalParam(
+        "akoben",
+        "Akoben contract address",
+        undefined,
+        types.string
+    )
+    .addOptionalParam(
+        "semaphoreVerifier",
+        "SemaphoreVerifier contract address",
+        undefined,
+        types.string
+    )
     .setAction(
-        async ({ logs, akoben: akobenAddress, semaphoreVerifier: semaphoreVerifierAddress }, { ethers, run }): Promise<Contract> => {
+        async (
+            {
+                logs,
+                akoben: akobenAddress,
+                semaphoreVerifier: semaphoreVerifierAddress
+            },
+            { ethers, run }
+        ): Promise<Contract> => {
+            // Deploy Pairing library if SemaphoreVerifier address is not provided
             if (!semaphoreVerifierAddress) {
                 const PairingFactory = await ethers.getContractFactory("Pairing");
                 const pairing = await PairingFactory.deploy();
-                await pairing.waitForDeployment();  // Use the correct wait method
+
+                await pairing.deployed();
 
                 if (logs) {
-                    console.info(`Pairing library has been deployed to: ${pairing.target}`);
+                    console.info(
+                        `Pairing library deployed to: ${pairing.address}`
+                    );
                 }
 
                 const SemaphoreVerifierFactory = await ethers.getContractFactory("SemaphoreVerifier", {
                     libraries: {
-                        Pairing: pairing.target
+                        Pairing: pairing.address
                     }
                 });
-
                 const semaphoreVerifier = await SemaphoreVerifierFactory.deploy();
-                await semaphoreVerifier.waitForDeployment();  // Use the correct wait method
+                
+                await semaphoreVerifier.deployed();
 
                 if (logs) {
-                    console.info(`SemaphoreVerifier contract has been deployed to: ${semaphoreVerifier.target}`);
+                    console.info(
+                        `SemaphoreVerifier deployed to: ${semaphoreVerifier.address}`
+                    );
                 }
 
-                semaphoreVerifierAddress = semaphoreVerifier.target;
+                semaphoreVerifierAddress = semaphoreVerifier.address;
             }
 
+            // Deploy Akoben contract if Akoben address is not provided
             if (!akobenAddress) {
                 const akoben = await run("deploy:akoben", { logs });
-                akobenAddress = akoben.target;
+                akobenAddress = akoben.address;
             }
 
-            const ContractFactory = await ethers.getContractFactory("AkobenSemaphore");
-            const contract = await ContractFactory.deploy(semaphoreVerifierAddress, akobenAddress);
-            await contract.waitForDeployment();  // Use the correct wait method
+            // Deploy AkobenSemaphore contract
+            const AkobenSemaphoreFactory = await ethers.getContractFactory("AkobenSemaphore");
+            const contract = await AkobenSemaphoreFactory.deploy(semaphoreVerifierAddress, akobenAddress);
+
+            await contract.deployed();
 
             if (logs) {
-                console.info(`AkobenSemaphore contract has been deployed to: ${contract.target}`);
+                console.info(
+                    `AkobenSemaphore deployed to: ${contract.address}`
+                );
             }
 
+            // Return the contract instance
             return contract;
         }
     );
+
+export {};
