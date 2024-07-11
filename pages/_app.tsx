@@ -7,6 +7,7 @@ import { RecoilRoot, useRecoilCallback } from "recoil";
 import Head from "next/head";
 import { UserProvider } from "@/components/User/UserContext";
 import { authModalState } from "@/atoms/authModalAtom";
+import { AuthProvider } from "@/context/AuthContext";
 
 /**
  * Represents the entire application.
@@ -29,12 +30,14 @@ export default function App({ Component, pageProps }: AppProps) {
     <RecoilRoot>
       <ChakraProvider theme={theme}>
         <UserProvider>
+          <AuthProvider>
           <Layout>
             <Head>
               <title>Akoben</title>
             </Head>
             <Component {...pageProps} />
           </Layout>
+          </AuthProvider>
         </UserProvider>
       </ChakraProvider>
     </RecoilRoot>

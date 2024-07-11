@@ -1,3 +1,4 @@
+'use client'
 // UserContext.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/components/User/User';

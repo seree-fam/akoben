@@ -11,12 +11,17 @@ import { GetServerSidePropsContext } from "next";
 import React, { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import safeJsonStringify from "safe-json-stringify";
+import { useAuth } from "@/context/AuthContext";
+import { Box, Spinner, Center } from "@chakra-ui/react";
+import ErrorPage from "@/pages/ErrorPage"
+import { useUser} from "@/components/User/UserContext"
 
 /**
  * @param {Community} communityData - Community data for the current community
  */
 type CommunityPageProps = {
   communityData: Community;
+  error?: string;
 };
 
 /**
@@ -24,8 +29,11 @@ type CommunityPageProps = {
  * @param {Community} communityData - Community data for the current community
  * @returns {React.FC<CommunityPageProps>} - Community page component
  */
-const CommunityPage: React.FC<CommunityPageProps> = ({ communityData }) => {
+const CommunityPage: React.FC<CommunityPageProps> = ({ communityData, error, }) => {
   const setCommunityStateValue = useSetRecoilState(communityState);
+  const {  user, userLoading } = useAuth();
+  const { user: semaphoreUser } = useUser()
+
 
   // store the community data currently available into the state as soon as the component renders
   useEffect(() => {
@@ -36,6 +44,29 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityData }) => {
       }));
     }
   }, [communityData, setCommunityStateValue]);
+
+  if (error) {
+    return <ErrorPage message={error} />;
+  }
+
+  if (userLoading) {
+    return (
+      <Center height="100vh">
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
+
+  if (!user || !semaphoreUser) {
+    // You can redirect the user to the login page or show a message
+    return (
+      <Center height="100vh">
+        <Box textAlign="center">
+          <p>You need to be logged in to view this community.</p>
+        </Box>
+      </Center>
+    );
+  }
 
   if (!communityData || Object.keys(communityData).length === 0) {
     //  if community data is not available or empty, return not found page
@@ -87,9 +118,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } catch (error) {
-    // todo: add error page
     console.log("Error: getServerSideProps", error);
-    return { props: {} };
+    return { props: {
+      error: "There was an error loading the community. Please try again later.",
+    } };
   }
 }
 

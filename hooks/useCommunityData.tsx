@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import useCustomToast from "./useCustomToast";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
+import apiSdk from "@/utils/bandada";
 
 /**
  * Checks whether a user is subscribed to a community.
@@ -37,6 +38,58 @@ const useCommunityData = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
   const router = useRouter();
   const showToast = useCustomToast();
+
+  const createCommunityWithBandada = async (communityData: Community, apiKey: string) => {
+    try {
+      // Create a new Bandada group
+      const groupCreateDetails = {
+        name: communityData.name,
+        description: communityData.description,
+        treeDepth: 16,
+        fingerprintDuration: 3600
+      };
+
+      const group = await apiSdk.createGroup(groupCreateDetails, apiKey);
+
+      // Update community data with Bandada groupId
+      const communityRef = doc(firestore, "communities", communityData.id);
+      await writeBatch(firestore).update(communityRef, {
+        bandadaGroupId: group.id
+      });
+
+      // Update state
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: {
+          ...prev.currentCommunity,
+          bandadaGroupId: group.id,
+          id: communityData.id,
+          name: communityData.name,
+          description: communityData.description,
+          creatorId: communityData.creatorId,
+          numberOfMembers: communityData.numberOfMembers,
+          privacyType: communityData.privacyType,
+          createdAt: communityData.createdAt,
+          imageURL: communityData.imageURL
+        } as Community,
+      }));
+
+      showToast({
+        title: "Community Created",
+        description: "Community and Bandada group created successfully",
+        status: "success",
+      });
+    } catch (error: any) {
+      console.log("Error: createCommunityWithBandada", error.message);
+      showToast({
+        title: "Could not Create Community",
+        description: "There was an error creating the community and Bandada group",
+        status: "error",
+      });
+      setErrorState(error.message);
+    }
+  };
+
 
   /**
    * Handles the user subscribing or unsubscribing to a community.
@@ -235,6 +288,7 @@ const useCommunityData = () => {
     communityStateValue,
     onJoinOrLeaveCommunity,
     loading: loadingState,
+    createCommunityWithBandada,
   };
 };
 
