@@ -56,7 +56,7 @@ const CreatePostLink: React.FC<CreatePostProps> = () => {
         as={IoImageOutline}
         fontSize={24}
         mr={4}
-        color="gray.400"
+        color="green.400"
         cursor="pointer"
       />
       <Icon as={BsLink45Deg} fontSize={24} color="gray.400" cursor="pointer" />

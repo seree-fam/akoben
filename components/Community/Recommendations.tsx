@@ -5,7 +5,6 @@ import useCustomToast from "@/hooks/useCustomToast";
 import {
   Flex,
   Icon,
-  Link,
   Skeleton,
   SkeletonCircle,
   Stack,
@@ -18,6 +17,7 @@ import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoPeopleCircleOutline } from "react-icons/io5";
+import Link from "next/link";
 
 /**
  * Displays the top 5 communities with the most members.
@@ -139,7 +139,7 @@ const SuggestedCommunitiesList: React.FC = () => {
               (snippet) => snippet.communityId === item.id
             );
             return (
-              <Link key={item.id} href={`/community/${item.id}`}>
+              <Link key={item.id} href={`/community/${item.id}`} passHref>
                 <Flex
                   key={item.id}
                   align="center"
