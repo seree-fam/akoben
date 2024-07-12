@@ -11,7 +11,7 @@ import { GetServerSidePropsContext } from "next";
 import React, { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import safeJsonStringify from "safe-json-stringify";
-
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 /**
  * @param {Community} communityData - Community data for the current community
  */
@@ -26,6 +26,7 @@ type CommunityPageProps = {
  */
 const CommunityPage: React.FC<CommunityPageProps> = ({ communityData }) => {
   const setCommunityStateValue = useSetRecoilState(communityState);
+  const [user, loading, error, , ] = useSemaphoreAuthState(); 
 
   // store the community data currently available into the state as soon as the component renders
   useEffect(() => {
@@ -44,14 +45,14 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityData }) => {
 
   return (
     <>
-      <Header communityData={communityData} />
+      {user && <Header communityData={communityData} />}
       <PageContent>
         <>
-          <CreatePostLink />
-          <Posts communityData={communityData} />
+          { user && <CreatePostLink /> }
+          { user && <Posts communityData={communityData} /> }
         </>
         <>
-          <About communityData={communityData} />
+          { user && <About communityData={communityData} /> }
         </>
       </PageContent>
     </>
