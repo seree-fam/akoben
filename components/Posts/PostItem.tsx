@@ -6,7 +6,6 @@ import {
   Flex,
   Icon,
   Image,
-  Link,
   Skeleton,
   Stack,
   Text,
@@ -32,7 +31,7 @@ import PostItemError from "../atoms/ErrorMessage";
 import  { memo } from 'react';
 import { useAuth } from '@/hooks/useAuth'; // Use the useAuth hook
 import { Box } from '@chakra-ui/react'
-
+import Link from "next/link";
 
 /**
  * @param {Post} post - post object
@@ -368,14 +367,9 @@ const PostDetails = ({ showCommunityImage, post }: PostDetailsProps) => {
             />
           )}
           <Link href={`/community/${post.communityId}`}>
-            <Text
-              fontWeight={700}
-              _hover={{ textDecoration: "underline" }}
-              pr={2}
-              onClick={(event) => event.stopPropagation()}
-            >
-              {post.communityId}
-            </Text>
+          <Text color="gray.500" fontWeight={600}>
+          {post.communityId}
+          </Text>
           </Link>
         </>
       )}
