@@ -12,11 +12,14 @@ import { atom } from "recoil";
  */
 export interface Community {
   id: string;
+  name: string;
+  description: string;
   creatorId: string;
   numberOfMembers: number;
   privacyType: "public" | "restricted" | "private";
   createdAt?: Timestamp;
   imageURL?: string;
+  bandadaGroupId?: string;
 }
 
 /**

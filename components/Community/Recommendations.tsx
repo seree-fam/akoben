@@ -12,12 +12,17 @@ import {
   Text,
   Box,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoPeopleCircleOutline } from "react-icons/io5";
 import Link from "next/link";
+import InviteCodeModal from "@/components/Modal/CommunitySettings/InviteCodeModal";
+import apiSdk from "@bandada/api-sdk"; // Adjust the import path as necessary
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the hook
+
 
 /**
  * Displays the top 5 communities with the most members.
@@ -85,6 +90,9 @@ const SuggestedCommunitiesList: React.FC = () => {
   const [communities, setCommunities] = useState<Community[]>([]);
   const router = useRouter();
   const showToast = useCustomToast();
+  const [user, userLoading, userError] = useSemaphoreAuthState();
+  const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   /**
    * Gets the top 5 communities with the most members.
@@ -115,10 +123,18 @@ const SuggestedCommunitiesList: React.FC = () => {
     }
   };
 
+  
+
   useEffect(() => {
     getCommunityRecommendations();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleSubscribe = async (communityId: string, inviteCode: string) => {
+    setSelectedCommunity(null);
+
+    
+  };
   return (
     <Flex direction="column" mb={0}>
       {loading ? (
@@ -190,6 +206,8 @@ const SuggestedCommunitiesList: React.FC = () => {
                       onClick={(event) => {
                         event.preventDefault();
                         onJoinOrLeaveCommunity(item, isJoined);
+                        setSelectedCommunity(item);
+                        onOpen();
                       }}
                     >
                       {isJoined ? "Unsubscribe" : "Subscribe"}
@@ -212,6 +230,18 @@ const SuggestedCommunitiesList: React.FC = () => {
           View All
         </Button>
       </Box>
+      {selectedCommunity && (
+        <InviteCodeModal
+          isOpen={isOpen}
+          onClose={() => {
+            setSelectedCommunity(null);
+            onClose();
+          }}
+          communityId={selectedCommunity.id}
+          handleSubscribe={handleSubscribe}
+
+        />
+      )}
     </Flex>
   );
 };

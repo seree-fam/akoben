@@ -11,6 +11,7 @@
     "docker:compose": "docker-compose -f docker/docker-compose.yml up --build"
   },
   "dependencies": {
+    "@bandada/api-sdk": "^2.3.0",
     "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.8.2",
     "@chakra-ui/system": "^2.6.0",
@@ -40,11 +41,13 @@
     "react-icons": "^5.2.1",
     "recoil": "^0.7.6",
     "safe-json-stringify": "^1.2.0",
+    "snarkjs": "^0.7.4",
     "typescript": "5.4.5"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
     "@types/safe-json-stringify": "^1.1.2",
+    "@types/snarkjs": "^0.7.8",
     "eslint": "8"
   }
 }

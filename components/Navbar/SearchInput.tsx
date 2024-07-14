@@ -78,12 +78,12 @@ const SearchBox: React.FC = () => {
         _hover={{
           bg: "white",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: "green.500",
         }}
         _focus={{
           outline: "none",
           border: "1px solid",
-          borderColor: "red.500",
+          borderColor: "green.500",
         }}
         height="40px"
         bg="gray.100"

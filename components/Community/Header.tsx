@@ -95,7 +95,7 @@ const CommunityIcon = ({ imageURL }: CommunityIconProps) => {
       borderRadius="full"
       boxSize="66px"
       alt="Community icons"
-      color="red.500"
+      color="green.500"
       border="3px solid white"
       shadow="md"
     />
@@ -104,7 +104,7 @@ const CommunityIcon = ({ imageURL }: CommunityIconProps) => {
     <Icon
       as={HiArrowCircleUp}
       fontSize={64}
-      color="red.500"
+      color="green.800"
       border="3px solid white"
       borderRadius="full"
       bg="white"
