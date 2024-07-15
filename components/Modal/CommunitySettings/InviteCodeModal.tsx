@@ -15,7 +15,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useInviteCode } from "@/hooks/useInviteCode";
-import apiSdk from "@bandada/api-sdk";
+import apiSdk from "@/utils/bandada";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 import useCustomToast from "@/hooks/useCustomToast";
 
@@ -40,18 +40,7 @@ const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, comm
     setError("");
 
     try {
-      await validateInviteCode();
-      if (isValid) {
-        await apiSdk.addMemberByInviteCode(communityId, user!.uid, inputInviteCode);
-        toast({
-          title: "Success",
-          description: "You have successfully joined the community.",
-          status: "success",
-        });
-        onClose();
-      } else {
-        setError("Invalid invite code. Please try again.");
-      }
+      await apiSdk.addMemberByInviteCode(communityId, user!.uid, inputInviteCode);
     } catch (error) {
       setError("Failed to join the community. Please try again.");
     } finally {
