@@ -38,3 +38,15 @@ export async function generateInviteCode(): Promise<{ inviteCode: string; proof:
   }
 }
 
+
+export async function verifyInviteCode(proof: any, publicSignals: any): Promise<boolean> {
+  try {
+    const vKey = await fetch("/verification_key.json").then(res => res.json());
+    const isValid = await groth16.verify(vKey, publicSignals, proof);
+
+    return isValid;
+  } catch (error) {
+    console.error("Error in verifying invite code:", error);
+    throw error;
+  }
+}
