@@ -1,6 +1,6 @@
 import { groth16 } from "snarkjs";
 import apiSdk from "@/utils/bandada";
-import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query, where, addDoc } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
 
 const apiKey = process.env.NEXT_PUBLIC_BANDADA_API_KEY || " ";
@@ -26,7 +26,9 @@ function alphanumericToNumericString(alphanumeric: string): string {
   return alphanumeric.split('').map(char => char.charCodeAt(0).toString()).join('');
 }
 
-export async function generateInviteCode(): Promise<{ inviteCode: string; proof: any; publicSignals: any }> {
+//export async function generateInviteCode(): Promise<{ inviteCode: string; proof: any; publicSignals: any }> {
+
+export async function generateInviteCode(): Promise<{ inviteCode: string; }> {
   try {
     const communityQuery = query(
       collection(firestore, "communities"),
@@ -54,17 +56,31 @@ export async function generateInviteCode(): Promise<{ inviteCode: string; proof:
         console.log("Numeric invite code:", numericInviteCode);
         console.log("Numeric valid code:", numericValidCode);
 
-        const { proof, publicSignals } = await groth16.fullProve(
-          { inviteCode: numericInviteCode, validCode: numericValidCode },
-          "/InviteCode_js/InviteCode.wasm",
-          "/circuit_0001.zkey"
-        );
+        await addDoc(collection(firestore, "inviteCodes"), {
+          inviteCode,
+          groupId: community.bandadaGroupId,
+          createdAt: new Date()
+        });
+        return { inviteCode};
 
-        if (proof && publicSignals) {
-          console.log("Proof:", proof);
-          console.log("Public signals:", publicSignals);
-          return { inviteCode, proof, publicSignals };
-        }
+        // const { proof, publicSignals } = await groth16.fullProve(
+        //   { inviteCode: numericInviteCode, validCode: numericValidCode },
+        //   "/InviteCode_js/InviteCode.wasm",
+        //   "/circuit_0001.zkey"
+        // );
+
+        // if (proof && publicSignals) {
+        //   console.log("Proof:", proof);
+        //   console.log("Public signals:", publicSignals);
+
+        //   // Store the invite code and group ID in Firestore
+        //   await addDoc(collection(firestore, "inviteCodes"), {
+        //     inviteCode,
+        //     groupId: community.bandadaGroupId,
+        //     createdAt: new Date()
+        //   });
+        //   return { inviteCode, proof, publicSignals };
+        // }
       } catch (error) {
         console.error(`Error generating proof for community ${community.id}:`, error);
       }

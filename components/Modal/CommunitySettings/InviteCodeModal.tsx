@@ -14,11 +14,11 @@ import {
   FormErrorMessage,
   useToast,
 } from "@chakra-ui/react";
-import { useInviteCode } from "@/hooks/useInviteCode";
 import apiSdk from "@/utils/bandada";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 import useCustomToast from "@/hooks/useCustomToast";
-import { generateInviteCode } from "@/utils/inviteCodeUtils";
+import { firestore } from "@/firebase/clientApp";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 interface InviteCodeModalProps {
   isOpen: boolean;
@@ -28,7 +28,6 @@ interface InviteCodeModalProps {
 }
 
 const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, communityId }) => {
-  const { inviteCode, validateInviteCode, isValid } = useInviteCode();
   const [inputInviteCode, setInputInviteCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -41,9 +40,28 @@ const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, comm
     setError("");
 
     try {
+      const inviteCodeQuery = query(
+        collection(firestore, "inviteCodes"),
+        where("inviteCode", "==", inputInviteCode)
+      );
+      const inviteCodeDocs = await getDocs(inviteCodeQuery);
 
-      const { inviteCode, proof, publicSignals } = await generateInviteCode();
-      await apiSdk.addMemberByInviteCode(communityId, user!.uid, inviteCode);
+      if (inviteCodeDocs.empty) {
+        setError("Invalid invite code. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const inviteCodeDoc = inviteCodeDocs.docs[0];
+      const groupId = inviteCodeDoc.data().groupId;
+
+      await apiSdk.addMemberByInviteCode(groupId, user!.uid, inputInviteCode);
+      showToast({
+        title: "success",
+        description: "You have successfully joined the community",
+        status: "success",
+      });
+      onClose();
     } catch (error) {
       setError("Failed to join the community. Please try again.");
     } finally {
