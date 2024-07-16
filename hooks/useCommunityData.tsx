@@ -1,3 +1,4 @@
+// hooks/useCommunityData.tsx
 /* eslint-disable react-hooks/exhaustive-deps */
 import { authModalState } from "@/atoms/authModalAtom";
 import {

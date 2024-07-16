@@ -1,3 +1,4 @@
+//components/Modal/CommunitySettings/CommunitySettings.tsx
 import { Community, communityState } from "@/atoms/communitiesAtom";
 import { firestore, storage } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";

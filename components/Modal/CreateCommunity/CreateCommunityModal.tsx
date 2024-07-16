@@ -176,6 +176,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
 
         const bandadaApiKey = process.env.NEXT_PUBLIC_BANDADA_API_KEY || " ";
         const group = await apiSdk.createGroup(groupCreateDetails, bandadaApiKey);
+        console.log(group);
 
 
         // create community

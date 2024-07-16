@@ -18,12 +18,13 @@ import { useInviteCode } from "@/hooks/useInviteCode";
 import apiSdk from "@/utils/bandada";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 import useCustomToast from "@/hooks/useCustomToast";
+import { generateInviteCode } from "@/utils/inviteCodeUtils";
 
 interface InviteCodeModalProps {
   isOpen: boolean;
   onClose: () => void;
   communityId: string;
-  handleSubscribe: (communityId: string, inviteCode: string) => Promise<void>;
+  handleSubscribe: (communityId: string) => Promise<void>;
 }
 
 const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, communityId }) => {
@@ -40,7 +41,9 @@ const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, comm
     setError("");
 
     try {
-      await apiSdk.addMemberByInviteCode(communityId, user!.uid, inputInviteCode);
+
+      const { inviteCode, proof, publicSignals } = await generateInviteCode();
+      await apiSdk.addMemberByInviteCode(communityId, user!.uid, inviteCode);
     } catch (error) {
       setError("Failed to join the community. Please try again.");
     } finally {
