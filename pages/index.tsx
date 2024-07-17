@@ -26,6 +26,9 @@ import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ["latin"] });
 
+
+
+
 export default function Home() {
   const [user, loading, error,  handleConnectWallet ] = useSemaphoreAuthState(); 
   const [isLoading, setLoading] = useState(false);
@@ -65,6 +68,7 @@ export default function Home() {
         const postQuery = query(
           collection(firestore, "posts"),
           where("communityId", "in", myCommunityIds),
+          where("creatorId", "==", user?.uid),
           // orderBy("voteStatus", "desc"),
           limit(10)
         ); // get all posts in community with certain requirements
@@ -72,7 +76,8 @@ export default function Home() {
         const posts = postDocs.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        })); // get all posts in community
+        })) // get all posts in community
+
 
         setPostStateValue((prev) => ({
           ...prev,
@@ -101,6 +106,7 @@ export default function Home() {
       const postQuery = query(
         collection(firestore, "posts"),
         orderBy("voteStatus", "desc"),
+        where("creatorId", "==", user?.uid),
         limit(10)
       ); // get all posts in community with certain requirements
 
