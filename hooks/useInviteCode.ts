@@ -4,16 +4,17 @@ import { generateInviteCode, verifyInviteCode } from "@/utils/inviteCodeUtils";
 
 export function useInviteCode() {
   const [inviteCode, setInviteCode] = useState<string>("");
-  const [proof, setProof] = useState<any>(null);
-  const [publicSignals, setPublicSignals] = useState<any>(null);
+ // const [proof, setProof] = useState<any>(null);
+//  const [publicSignals, setPublicSignals] = useState<any>(null);
   const [isValid, setIsValid] = useState<boolean>(false);
 
   const createInviteCode = async () => {
     try {
-    const { inviteCode, proof, publicSignals } = await generateInviteCode();
+      //  const { inviteCode, proof, publicSignals } = await generateInviteCode();
+    const { inviteCode } = await generateInviteCode();
     setInviteCode(inviteCode);
-    setProof(proof);
-    setPublicSignals(publicSignals);
+    //setProof(proof);
+    //setPublicSignals(publicSignals);
   }  catch (error) {
     console.error("Error creating invite code:", error);
   }
@@ -21,7 +22,7 @@ export function useInviteCode() {
 
   const validateInviteCode = async () => {
     try {
-    const isValid = await verifyInviteCode(proof, publicSignals);
+    //const isValid = await verifyInviteCode(proof, publicSignals);
     setIsValid(isValid);
   } catch (error) {
     console.error("Error validating invite code:", error);
