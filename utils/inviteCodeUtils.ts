@@ -35,11 +35,19 @@ export async function generateInviteCode(): Promise<{ inviteCode: string; proof:
       orderBy("numberOfMembers", "desc"),
       limit(5)
     );
+     // Log the Firestore query details
+     console.log("Fetching communities with query:", communityQuery);
+
     const communityDocs = await getDocs(communityQuery);
+     // Log the retrieved community documents
+     console.log("Retrieved community documents:", communityDocs.docs);
     const communities = communityDocs.docs.map((doc) => ({
       id: doc.id,
       bandadaGroupId: doc.data().bandadaGroupId,
     })) as Community[];
+
+    // Log the mapped communities
+    console.log("Mapped communities:", communities);
 
     for (const community of communities) {
       try {
@@ -67,15 +75,24 @@ export async function generateInviteCode(): Promise<{ inviteCode: string; proof:
           console.log("Proof:", proof);
           console.log("Public signals:", publicSignals);
 
+          // Flatten the proof and publicSignals to avoid nested arrays
+          const flattenedProof = {
+            pi_a: proof.pi_a.flat(),
+            pi_b: proof.pi_b.flat(),
+            pi_c: proof.pi_c.flat(),
+          };
+          const flattenedPublicSignals = publicSignals.flat();
+
          // Store the invite code and group ID in Firestore
          await addDoc(collection(firestore, "inviteCodes"), {
             inviteCode,
             groupId: community.bandadaGroupId,
-            proof,
-            publicSignals,
+            proof: flattenedProof,
+            publicSignals: flattenedPublicSignals,
            createdAt: new Date()
           });
-          return { inviteCode, proof, publicSignals };
+          console.log(`Invite code ${inviteCode} successfully stored in Firestore`);
+          return { inviteCode,  proof: flattenedProof, publicSignals: flattenedPublicSignals };
         }
       } catch (error) {
         console.error(`Error generating proof for community ${community.id}:`, error);
@@ -89,8 +106,24 @@ export async function generateInviteCode(): Promise<{ inviteCode: string; proof:
   }
 }
 
+function unflattenProof(flatProof: any) {
+  return {
+    protocol: "groth16",
+    curve: "bn128",
+    pi_a: flatProof.pi_a,
+    pi_b: [
+      [flatProof.pi_b[0], flatProof.pi_b[1]],
+      [flatProof.pi_b[2], flatProof.pi_b[3]],
+      [flatProof.pi_b[4], flatProof.pi_b[5]],
+    ],
+    pi_c: flatProof.pi_c,
+  };
+}
+
 export async function verifyInviteCode(inviteCode: string): Promise<boolean> {
   try {
+    console.log("Verifying invite code:", inviteCode);
+
     // Fetch proof and public signals from Firestore based on invite code
     const inviteCodeQuery = query(
       collection(firestore, "inviteCodes"),
@@ -99,15 +132,26 @@ export async function verifyInviteCode(inviteCode: string): Promise<boolean> {
     const inviteCodeDocs = await getDocs(inviteCodeQuery);
 
     if (inviteCodeDocs.empty) {
+      console.log("No document found for invite code:", inviteCode);
       throw new Error("Invalid invite code. No matching document found.");
     }
 
     const inviteCodeDoc = inviteCodeDocs.docs[0];
-    const { proof, publicSignals } = inviteCodeDoc.data();
+    const { proof: flatProof, publicSignals } = inviteCodeDoc.data();
+    console.log("Document found:", inviteCodeDoc.data());
+
+    // Log public signals and proof
+    console.log("Public signals:", publicSignals);
+    console.log("Flat proof:", flatProof);
+
+    const proof = unflattenProof(flatProof);
+    console.log("Unflattened proof:", proof);
 
     const vKey = await fetch("/verification_key.json").then(res => res.json());
+    console.log("Verification key:", vKey);
+
     const isValid = await groth16.verify(vKey, publicSignals, proof);
-    console.log("Verified:", isValid);
+    console.log("Verification result:", isValid);
 
     return isValid;
   } catch (error) {

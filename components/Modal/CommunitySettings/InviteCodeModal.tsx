@@ -22,7 +22,6 @@ import { firestore } from "@/firebase/clientApp";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useInviteCode } from "@/hooks/useInviteCode";
 
-
 interface InviteCodeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -35,15 +34,17 @@ const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, comm
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const showToast = useCustomToast();
-  const toast = useToast();
   const [user, userLoading, userError] = useSemaphoreAuthState();
-  const {  validateInviteCode } = useInviteCode();
+  const { validateInviteCode } = useInviteCode();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setError("");
 
     try {
+      
+
+      // Query all invite codes from Firestore
       const inviteCodeQuery = query(
         collection(firestore, "inviteCodes"),
         where("inviteCode", "==", inputInviteCode)
@@ -52,25 +53,48 @@ const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, comm
 
       if (inviteCodeDocs.empty) {
         setError("Invalid invite code. Please try again.");
+        console.log("No document found for invite code:", inputInviteCode);
         setIsSubmitting(false);
         return;
       }
 
-      const inviteCodeDoc = inviteCodeDocs.docs[0];
-      const groupId = inviteCodeDoc.data().groupId;
-      const isValid = await validateInviteCode()  // Use the invite code to fetch and verify proof
-      if (isValid) {
-        await apiSdk.addMemberByInviteCode(groupId, user!.uid, inputInviteCode);
-      showToast({
-        title: "success",
-        description: "You have successfully joined the community",
-        status: "success",
-      });
-      onClose();
-    } else {
-      setError("Invalid invite code. Verification failed.");
-    }
+      // Iterate through each invite code document
+      let success = false;
+      for (const inviteCodeDoc of inviteCodeDocs.docs) {
+        const groupId = inviteCodeDoc.data().groupId;
+
+        // Validate the invite code with proof verification
+        const isValid = await validateInviteCode(inputInviteCode);
+        if (isValid) {
+          console.log("Invite code verified successfully. Adding member to group...");
+          try {
+
+            // Attempt to add member to group
+            await apiSdk.addMemberByInviteCode(communityId, user!.uid, inputInviteCode);
+            success = true; // Mark success if addition is successful
+            break; // Exit loop if successfully added to a group
+          } catch (apiError) {
+            console.error("API error:", apiError);
+            setError(`Failed to join the community. Error: ${apiError}`);
+            // Continue to next invite code if adding member fails
+          }
+        } else {
+          setError("Invalid invite code. Verification failed.");
+        }
+      }
+
+      if (success) {
+        showToast({
+          title: "Success",
+          description: "You have successfully joined the community",
+          status: "success",
+        });
+        onClose();
+      } else {
+        setError("Failed to join the community. Please try again.");
+      }
     } catch (error) {
+      console.error("Error:", error);
       setError("Failed to join the community. Please try again.");
     } finally {
       setIsSubmitting(false);

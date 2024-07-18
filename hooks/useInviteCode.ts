@@ -20,7 +20,7 @@ export function useInviteCode() {
   }
 };
 
-  const validateInviteCode = async () => {
+  const validateInviteCode = async (inviteCode: string) => {
     try {
     const isValid = await verifyInviteCode(inviteCode);
 

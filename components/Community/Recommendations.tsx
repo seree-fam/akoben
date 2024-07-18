@@ -143,8 +143,7 @@ const SuggestedCommunitiesList: React.FC = () => {
 
   useEffect(() => {
     getCommunityRecommendations();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-    if(selectedCommunity){console.log(selectedCommunity.bandadaGroupId || "")} else {console.log("nana")}
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
