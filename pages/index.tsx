@@ -106,8 +106,7 @@ export default function Home() {
       const postQuery = query(
         collection(firestore, "posts"),
         orderBy("voteStatus", "desc"),
-        where("creatorId", "==", user?.uid),
-        limit(10)
+        limit(1)
       ); // get all posts in community with certain requirements
 
       const postDocs = await getDocs(postQuery); // get all posts in community

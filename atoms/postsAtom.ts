@@ -29,6 +29,7 @@ export type Post = {
   imageURL?: string;
   communityImageURL?: string;
   createTime: Timestamp;
+  merkleProof: string;
 };
 
 /**

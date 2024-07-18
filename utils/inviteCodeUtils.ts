@@ -26,9 +26,8 @@ function alphanumericToNumericString(alphanumeric: string): string {
   return alphanumeric.split('').map(char => char.charCodeAt(0).toString()).join('');
 }
 
-//export async function generateInviteCode(): Promise<{ inviteCode: string; proof: any; publicSignals: any }> {
 
-export async function generateInviteCode(): Promise<{ inviteCode: string; }> {
+export async function generateInviteCode(): Promise<{ inviteCode: string; proof: any; publicSignals: any }> {
   try {
     const communityQuery = query(
       collection(firestore, "communities"),
@@ -56,31 +55,28 @@ export async function generateInviteCode(): Promise<{ inviteCode: string; }> {
         console.log("Numeric invite code:", numericInviteCode);
         console.log("Numeric valid code:", numericValidCode);
 
-        await addDoc(collection(firestore, "inviteCodes"), {
-          inviteCode,
-          groupId: community.bandadaGroupId,
-          createdAt: new Date()
-        });
-        return { inviteCode};
 
-        // const { proof, publicSignals } = await groth16.fullProve(
-        //   { inviteCode: numericInviteCode, validCode: numericValidCode },
-        //   "/InviteCode_js/InviteCode.wasm",
-        //   "/circuit_0001.zkey"
-        // );
 
-        // if (proof && publicSignals) {
-        //   console.log("Proof:", proof);
-        //   console.log("Public signals:", publicSignals);
+         const { proof, publicSignals } = await groth16.fullProve(
+          { inviteCode: numericInviteCode, validCode: numericValidCode },
+          "/InviteCode_js/InviteCode.wasm",
+          "/circuit_0001.zkey"
+        );
 
-        //   // Store the invite code and group ID in Firestore
-        //   await addDoc(collection(firestore, "inviteCodes"), {
-        //     inviteCode,
-        //     groupId: community.bandadaGroupId,
-        //     createdAt: new Date()
-        //   });
-        //   return { inviteCode, proof, publicSignals };
-        // }
+        if (proof && publicSignals) {
+          console.log("Proof:", proof);
+          console.log("Public signals:", publicSignals);
+
+         // Store the invite code and group ID in Firestore
+         await addDoc(collection(firestore, "inviteCodes"), {
+            inviteCode,
+            groupId: community.bandadaGroupId,
+            proof,
+            publicSignals,
+           createdAt: new Date()
+          });
+          return { inviteCode, proof, publicSignals };
+        }
       } catch (error) {
         console.error(`Error generating proof for community ${community.id}:`, error);
       }
@@ -93,10 +89,25 @@ export async function generateInviteCode(): Promise<{ inviteCode: string; }> {
   }
 }
 
-export async function verifyInviteCode(proof: any, publicSignals: any): Promise<boolean> {
+export async function verifyInviteCode(inviteCode: string): Promise<boolean> {
   try {
+    // Fetch proof and public signals from Firestore based on invite code
+    const inviteCodeQuery = query(
+      collection(firestore, "inviteCodes"),
+      where("inviteCode", "==", inviteCode)
+    );
+    const inviteCodeDocs = await getDocs(inviteCodeQuery);
+
+    if (inviteCodeDocs.empty) {
+      throw new Error("Invalid invite code. No matching document found.");
+    }
+
+    const inviteCodeDoc = inviteCodeDocs.docs[0];
+    const { proof, publicSignals } = inviteCodeDoc.data();
+
     const vKey = await fetch("/verification_key.json").then(res => res.json());
     const isValid = await groth16.verify(vKey, publicSignals, proof);
+    console.log("Verified:", isValid);
 
     return isValid;
   } catch (error) {

@@ -1,3 +1,4 @@
+// components/Modal/CommunitySettings/inviteCodeModal.tsx
 import React, { useState } from "react";
 import {
   Modal,
@@ -19,6 +20,8 @@ import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
 import useCustomToast from "@/hooks/useCustomToast";
 import { firestore } from "@/firebase/clientApp";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { useInviteCode } from "@/hooks/useInviteCode";
+
 
 interface InviteCodeModalProps {
   isOpen: boolean;
@@ -34,6 +37,7 @@ const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, comm
   const showToast = useCustomToast();
   const toast = useToast();
   const [user, userLoading, userError] = useSemaphoreAuthState();
+  const {  validateInviteCode } = useInviteCode();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -54,14 +58,18 @@ const InviteCodeModal: React.FC<InviteCodeModalProps> = ({ isOpen, onClose, comm
 
       const inviteCodeDoc = inviteCodeDocs.docs[0];
       const groupId = inviteCodeDoc.data().groupId;
-
-      await apiSdk.addMemberByInviteCode(groupId, user!.uid, inputInviteCode);
+      const isValid = await validateInviteCode()  // Use the invite code to fetch and verify proof
+      if (isValid) {
+        await apiSdk.addMemberByInviteCode(groupId, user!.uid, inputInviteCode);
       showToast({
         title: "success",
         description: "You have successfully joined the community",
         status: "success",
       });
       onClose();
+    } else {
+      setError("Invalid invite code. Verification failed.");
+    }
     } catch (error) {
       setError("Failed to join the community. Please try again.");
     } finally {

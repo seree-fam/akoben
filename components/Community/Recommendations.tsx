@@ -126,12 +126,6 @@ const SuggestedCommunitiesList: React.FC = () => {
         id: doc.id,
         ...doc.data(),
       }));
-
-      console.log(communities)
-      // Logging the bandadaGroupId for each community
-    communities.forEach((community) => {
-      if(selectedCommunity){console.log(selectedCommunity.bandadaGroupId || "")} else {console.log("nana")}
-    });
       setCommunities(communities as Community[]);
     } catch (error) {
       console.log("Error: getCommunityRecommendations", error);

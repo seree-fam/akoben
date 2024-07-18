@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "akoben-83375"
-  }
+    "staging": "akoben-83375"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
