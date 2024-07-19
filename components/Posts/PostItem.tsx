@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
   useClipboard,
+  VStack,
   useToast,
   SkeletonCircle,
   SkeletonText
@@ -32,7 +33,7 @@ import  { memo } from 'react';
 import { useAuth } from '@/hooks/useAuth'; // Use the useAuth hook
 import { Box } from '@chakra-ui/react'
 import Link from "next/link";
-
+import { motion } from 'framer-motion'
 
 /**
  * @param {Post} post - post object
@@ -176,11 +177,44 @@ const PostItem: React.FC<PostItemProps> = memo(({
 
   if (!isAuthenticated) {
     return <>
-    <Text>You need to be logged in to view posts.</Text>
-    <Box padding='6' boxShadow='lg' bg='white'>
-    <SkeletonCircle size='10' />
-    <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
-    </Box>
+   <Flex
+      direction="column"
+      position="relative"
+      bg="white"
+      borderRadius={10}
+      border="1px solid"
+      borderColor="gray.300"
+      shadow="md"
+      maxW="lg"
+      mx="auto"
+      mt={10}
+      p={5}
+    >
+      <Flex
+        align="flex-end"
+        color="white"
+        p="6px 10px"
+        height="70px"
+        borderRadius="10px 10px 0px 0px"
+        fontWeight={700}
+        bgImage="url(/images/banners/small.jpg)"
+        backgroundSize="cover"
+        bgGradient="linear-gradient(to bottom, rgba(139, 0, 0, 0), rgba(139, 0, 0, 0.75)), url('/images/banners/small.jpg')"
+        mb={4}
+      >
+        Welcome to Freedom
+      </Flex>
+      <Box 
+        mb={8}
+        p={1}
+        bgGradient="linear(to-r, green.200, pink.500)"
+        borderRadius="md"
+      >
+        <Box borderRadius="md" overflow="hidden">
+          <Image src='/images/freedom.jpg' alt='Freedom' />
+        </Box>
+      </Box>
+    </Flex>
   </>
   }
 
