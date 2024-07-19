@@ -1,6 +1,6 @@
 import { groth16 } from "snarkjs";
 import apiSdk from "@/utils/bandada";
-import { collection, getDocs, limit, orderBy, query, where, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, getDocs, limit, orderBy, query, where, addDoc } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
 
 const apiKey = process.env.NEXT_PUBLIC_BANDADA_API_KEY || " ";
@@ -120,6 +120,37 @@ function unflattenProof(flatProof: any) {
   };
 }
 
+export async function storeVerificationKey(key: any): Promise<void> {
+  try {
+    const verificationKeyDoc = doc(collection(firestore, "verificationKeys"), "currentKey");
+    await setDoc(verificationKeyDoc, { key });
+    console.log("Verification key successfully stored in Firestore");
+  } catch (error) {
+    console.error("Error storing verification key:", error);
+    throw error;
+  }
+}
+
+export async function getVerificationKey(): Promise<any> {
+  try {
+    const verificationKeyDoc = doc(collection(firestore, "verificationKeys"), "currentKey");
+    const docSnapshot = await getDoc(verificationKeyDoc);
+
+    if (docSnapshot.exists()) {
+      const data = docSnapshot.data();
+      console.log("Verification key retrieved from Firestore:", data.key);
+      return data.key;
+    } else {
+      throw new Error("No verification key found in Firestore");
+    }
+  } catch (error) {
+    console.error("Error retrieving verification key:", error);
+    throw error;
+  }
+}
+
+
+
 export async function verifyInviteCode(inviteCode: string): Promise<boolean> {
   try {
     console.log("Verifying invite code:", inviteCode);
@@ -140,18 +171,11 @@ export async function verifyInviteCode(inviteCode: string): Promise<boolean> {
     const { proof: flatProof, publicSignals } = inviteCodeDoc.data();
     console.log("Document found:", inviteCodeDoc.data());
 
-    // Log public signals and proof
-    console.log("Public signals:", publicSignals);
-    console.log("Flat proof:", flatProof);
-
     const proof = unflattenProof(flatProof);
-    console.log("Unflattened proof:", proof);
 
-    const vKey = await fetch("/verification_key.json").then(res => res.json());
-    console.log("Verification key:", vKey);
+    const vKey = await getVerificationKey();
 
     const isValid = await groth16.verify(vKey, publicSignals, proof);
-    console.log("Verification result:", isValid);
 
     return isValid;
   } catch (error) {
