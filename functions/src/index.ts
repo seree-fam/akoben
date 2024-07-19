@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import fetch from 'node-fetch';
 import { groth16 } from 'snarkjs';
 import apiSdk from '../../utils/bandada';
 import { firestore } from "../../firebase/clientApp";
