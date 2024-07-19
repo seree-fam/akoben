@@ -305,43 +305,42 @@ type VoteSectionProps = {
  *
  * @returns {React.FC<VoteSectionProps>} - component to display the vote section of a post
  */
-const VoteSection: React.FC<VoteSectionProps> = ({
-  userVoteValue,
-  onVote,
-  post,
-}) => {
+
+const VoteSection: React.FC<VoteSectionProps> = ({ userVoteValue, onVote, post }) => {
+  const handleVote = (event: React.MouseEvent<SVGElement>, voteValue: number) => {
+    if (userVoteValue === voteValue) return; // Prevent multiple same votes
+    // If the user is changing their vote
+    const newVoteValue = userVoteValue === 0 ? voteValue : (userVoteValue === 1 ? -1 : 1);
+    onVote(event, post, newVoteValue, post.communityId);
+  };
+
   return (
     <>
-      {/* like button */}
+      {/* Like button */}
       <Icon
         as={userVoteValue === 1 ? IoArrowUpCircleSharp : IoArrowUpCircleOutline}
         color={userVoteValue === 1 ? "green.900" : "gray.900"}
         fontSize={22}
         cursor="pointer"
         _hover={{ color: "green.300" }}
-        onClick={(event) => onVote(event, post, 1, post.communityId)}
+        onClick={(event) => handleVote(event, 1)}
       />
-      {/* number of likes  */}
+      {/* Number of likes */}
       <Text fontSize="12pt" color="gray.800">
         {post.voteStatus}
       </Text>
-      {/* dislike button */}
+      {/* Dislike button */}
       <Icon
-        as={
-          userVoteValue === -1
-            ? IoArrowDownCircleSharp
-            : IoArrowDownCircleOutline
-        }
+        as={userVoteValue === -1 ? IoArrowDownCircleSharp : IoArrowDownCircleOutline}
         color={userVoteValue === -1 ? "green.800" : "gray.500"}
         _hover={{ color: "green.300" }}
         fontSize={22}
         cursor="pointer"
-        onClick={(event) => onVote(event, post, -1, post.communityId)}
+        onClick={(event) => handleVote(event, -1)}
       />
     </>
   );
 };
-
 /**
  * @param {boolean} showCommunityImage - whether to show the community image
  * @param {Post} post - post object
