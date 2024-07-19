@@ -19,6 +19,7 @@ import { atom } from "recoil";
 export type Post = {
   id?: string; // optional because firebase will automatically add the id for the post
   communityId: string;
+  bandadaGroupId?: string;
   creatorId: string;
   creatorUsername: string;
   title: string;
@@ -28,6 +29,7 @@ export type Post = {
   imageURL?: string;
   communityImageURL?: string;
   createTime: Timestamp;
+  merkleProof: string;
 };
 
 /**

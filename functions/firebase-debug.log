@@ -1,0 +1,71 @@
+[debug] [2024-07-17T23:20:25.834Z] ----------------------------------------------------------------------
+[debug] [2024-07-17T23:20:25.837Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2024-07-17T23:20:25.838Z] CLI Version:   13.11.2
+[debug] [2024-07-17T23:20:25.838Z] Platform:      win32
+[debug] [2024-07-17T23:20:25.839Z] Node Version:  v20.10.0
+[debug] [2024-07-17T23:20:25.839Z] Time:          Thu Jul 18 2024 01:20:25 GMT+0200 (Central European Summer Time)
+[debug] [2024-07-17T23:20:25.839Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-07-17T23:20:25.966Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-07-17T23:20:26.516Z] [iam] checking project akoben-83375 for permissions ["firebase.projects.get"]
+[debug] [2024-07-17T23:20:26.520Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/akoben-83375:testIamPermissions [none]
+[debug] [2024-07-17T23:20:26.520Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/akoben-83375:testIamPermissions x-goog-quota-user=projects/akoben-83375
+[debug] [2024-07-17T23:20:26.520Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/akoben-83375:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-07-17T23:20:27.820Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/akoben-83375:testIamPermissions 200
+[debug] [2024-07-17T23:20:27.820Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/akoben-83375:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-07-17T23:20:27.821Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/akoben-83375 [none]
+[debug] [2024-07-17T23:20:28.325Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/akoben-83375 200
+[debug] [2024-07-17T23:20:28.326Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/akoben-83375 {"projectId":"akoben-83375","projectNumber":"815136586818","displayName":"akoben","name":"projects/akoben-83375","resources":{"hostingSite":"akoben-83375","realtimeDatabaseInstance":"akoben-83375-default-rtdb"},"state":"ACTIVE","etag":"1_f4851661-96bd-473a-9403-b5acb74f4489"}
+[info] 
+[info] === Serving from 'C:\Users\CCL\Desktop\next_discussion_platform-main'...
+[info] 
+[warn] !  functions: You are not signed in to the Firebase CLI. If you have authorized this machine using gcloud application-default credentials those may be discovered and used to access production services. {"metadata":{"emulator":{"name":"functions"},"message":"You are not signed in to the Firebase CLI. If you have authorized this machine using gcloud application-default credentials those may be discovered and used to access production services."}}
+[debug] [2024-07-17T23:20:28.345Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/akoben-83375/adminSdkConfig [none]
+[debug] [2024-07-17T23:20:28.664Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/akoben-83375/adminSdkConfig 200
+[debug] [2024-07-17T23:20:28.664Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/akoben-83375/adminSdkConfig {"projectId":"akoben-83375","databaseURL":"https://akoben-83375-default-rtdb.firebaseio.com","storageBucket":"akoben-83375.appspot.com"}
+[info] i  functions: Watching "C:\Users\CCL\Desktop\next_discussion_platform-main\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Users\\CCL\\Desktop\\next_discussion_platform-main\\functions\" for Cloud Functions..."}}
+[debug] [2024-07-17T23:20:28.694Z] Validating nodejs source
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2024-07-17T23:20:35.851Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "16"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^10.2.0",
+    "firebase-functions": "^3.21.0",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.3.2",
+    "snarkjs": "^0.7.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  },
+  "private": true
+}
+[debug] [2024-07-17T23:20:35.851Z] Building nodejs source
+[debug] [2024-07-17T23:20:35.852Z] Failed to find version of module node: reached end of search path C:\Users\CCL\Desktop\next_discussion_platform-main\functions\node_modules
+[warn] !  functions: Your requested "node" version "16" doesn't match your global version "20". Using node@20 from host. 
+[debug] [2024-07-17T23:20:35.857Z] Could not find functions.yaml. Must use http discovery
+[debug] [2024-07-17T23:20:35.868Z] Found firebase-functions binary at 'C:\Users\CCL\Desktop\next_discussion_platform-main\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8929
+
+[debug] [2024-07-17T23:20:41.434Z] Got response from /__/functions.yaml {"endpoints":{"createUserDocument":{"platform":"gcfv1","eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.create","eventFilters":{"resource":"projects/akoben-83375"},"retry":false},"labels":{},"entryPoint":"createUserDocument"},"deleteUserDocument":{"platform":"gcfv1","eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.delete","eventFilters":{"resource":"projects/akoben-83375"},"retry":false},"labels":{},"entryPoint":"deleteUserDocument"}},"specVersion":"v1alpha1","requiredAPIs":[]}
+[info] shutdown requested via /__/quitquitquit
+
+[info] +  functions: Loaded functions definitions from source: createUserDocument, deleteUserDocument. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: createUserDocument, deleteUserDocument."}}
+[debug] [2024-07-17T23:20:46.502Z] addAuthTrigger {"eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.create","resource":"projects/akoben-83375"}}
+[info] +  functions[us-central1-createUserDocument]: auth function initialized. {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mauth\u001b[22m function initialized."}}
+[debug] [2024-07-17T23:20:46.503Z] addAuthTrigger {"eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.delete","resource":"projects/akoben-83375"}}
+[info] +  functions[us-central1-deleteUserDocument]: auth function initialized. {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mauth\u001b[22m function initialized."}}

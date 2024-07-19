@@ -1,4 +1,5 @@
-import { Community } from "@/atoms/communitiesAtom";
+//components/community/Recommendation
+import { Community, communityState } from "@/atoms/communitiesAtom";
 import { firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import useCustomToast from "@/hooks/useCustomToast";
@@ -12,12 +13,17 @@ import {
   Text,
   Box,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IoPeopleCircleOutline } from "react-icons/io5";
 import Link from "next/link";
+import InviteCodeModal from "@/components/Modal/CommunitySettings/InviteCodeModal";
+import apiSdk from "@/utils/bandada"; // Adjust the import path as necessary
+import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; // Import the hook
+import { doc, writeBatch } from 'firebase/firestore';
 
 /**
  * Displays the top 5 communities with the most members.
@@ -75,6 +81,19 @@ const SuggestionsHeader: React.FC = () => {
   );
 };
 
+interface FirestoreCommunity {
+  id: string;
+  bandadaGroupId?: string;
+  numberOfMembers: number;
+  creatorId: string;
+  privacyType?: string;
+  imageURL?: string;
+  createdAt?: {
+    seconds: number;
+    nanoseconds: number;
+  };
+}
+
 /**
  * Displays the top 5 communities with the most members.
  * @returns {React.FC} - Suggested communities list component
@@ -85,6 +104,10 @@ const SuggestedCommunitiesList: React.FC = () => {
   const [communities, setCommunities] = useState<Community[]>([]);
   const router = useRouter();
   const showToast = useCustomToast();
+  const [user, userLoading, userError] = useSemaphoreAuthState();
+  const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [bandadaGroupId, setBandadaGroupId] = useState<string>("");
 
   /**
    * Gets the top 5 communities with the most members.
@@ -94,6 +117,7 @@ const SuggestedCommunitiesList: React.FC = () => {
     try {
       const communityQuery = query(
         collection(firestore, "communities"),
+        where("bandadaGroupId", "!=", ""),
         orderBy("numberOfMembers", "desc"),
         limit(5)
       );
@@ -115,10 +139,47 @@ const SuggestedCommunitiesList: React.FC = () => {
     }
   };
 
+  
+
   useEffect(() => {
     getCommunityRecommendations();
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleSubscribe = async (communityId: string) => {
+    console.log("waiting for instructions...");
+    if (communityId) {
+      const group = await apiSdk.getGroup(communityId)
+      const community: Community = {
+        id: group.id,
+        name: group.name,
+        description: "",
+        creatorId: "",
+        numberOfMembers: 0,
+        privacyType: "public"
+      };
+      console.log(community)
+      setSelectedCommunity(community);
+    } else {
+      setSelectedCommunity(null);
+    }
+    onOpen();
+
+  };
+
+  useEffect(() => {
+    if (selectedCommunity) {
+      console.log(selectedCommunity.bandadaGroupId || "");
+      setBandadaGroupId(selectedCommunity.bandadaGroupId || "");
+    } else {
+      console.log("nana");
+      setBandadaGroupId("");
+    }
+  }, [selectedCommunity]);
+
+
+
   return (
     <Flex direction="column" mb={0}>
       {loading ? (
@@ -190,6 +251,8 @@ const SuggestedCommunitiesList: React.FC = () => {
                       onClick={(event) => {
                         event.preventDefault();
                         onJoinOrLeaveCommunity(item, isJoined);
+                        setSelectedCommunity(item);
+                        onOpen();
                       }}
                     >
                       {isJoined ? "Unsubscribe" : "Subscribe"}
@@ -212,6 +275,18 @@ const SuggestedCommunitiesList: React.FC = () => {
           View All
         </Button>
       </Box>
+      {selectedCommunity && (
+        <InviteCodeModal
+          isOpen={isOpen}
+          onClose={() => {
+            setSelectedCommunity(null);
+            onClose();
+          }}
+          communityId={bandadaGroupId}
+          handleSubscribe={handleSubscribe}
+
+        />
+      )}
     </Flex>
   );
 };

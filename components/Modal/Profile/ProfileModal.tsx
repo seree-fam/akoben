@@ -67,7 +67,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, handleClose }) => {
     <Modal isOpen={open} onClose={closeModal}>
       <ModalOverlay />
       <ModalContent>
-        
         <ModalCloseButton />
         <ModalBody>
           <Stack spacing={4}>

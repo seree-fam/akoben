@@ -40,3 +40,14 @@ next-env.d.ts
 
 .env
 package-lock.json"config/serviceAccountKey.json" 
+pot12_0000.ptau
+pot12_0001.ptau
+pot12_final.ptau
+inviteCode.circom
+inviteCode.r1cs
+inviteCode.sym
+circuit_0000.zkey
+proof.json
+input.json
+public.json
+witness.wtns

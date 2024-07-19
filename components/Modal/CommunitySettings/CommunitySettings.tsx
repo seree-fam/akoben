@@ -1,3 +1,4 @@
+//components/Modal/CommunitySettings/CommunitySettings.tsx
 import { Community, communityState } from "@/atoms/communitiesAtom";
 import { firestore, storage } from "@/firebase/clientApp";
 import useCustomToast from "@/hooks/useCustomToast";
@@ -19,6 +20,7 @@ import {
   Select,
   Stack,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   collection,
@@ -33,10 +35,11 @@ import {
   ref,
   uploadString,
 } from "firebase/storage";
-import React, { useRef, useState } from "react";
-import { BsFillPeopleFill } from "react-icons/bs";
+import React, { useRef, useEffect, useState } from "react";
+import { BsFillPeopleFill, BsClipboard } from "react-icons/bs";
 import { useRecoilState } from "recoil";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
+import { useInviteCode } from "@/hooks/useInviteCode";
 
 /**
  * @param {boolean} open - boolean to determine if the modal is open or not
@@ -72,6 +75,12 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   const [deleteImage, setDeleteImage] = useState(false);
   const showToast = useCustomToast();
   const [selectedPrivacyType, setSelectedPrivacyType] = useState("");
+  const { inviteCode, createInviteCode, setInviteCode } = useInviteCode();
+  useEffect(() => {
+    if (open && !inviteCode) {
+      createInviteCode();
+    }
+  }, [open, inviteCode, createInviteCode]);
 
   /**
    * Allows admin to change the image of the community.
@@ -243,6 +252,10 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
     setSelectedPrivacyType(event.target.value); // set selected privacy type
   };
 
+
+  
+
+
   /**
    * Handles applying changes to the community settings.
    * Changes can be:
@@ -280,6 +293,7 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
     setSelectedFile("");
     setSelectedPrivacyType("");
     setDeleteImage(false);
+    setInviteCode("");
     handleClose();
   };
 
@@ -353,6 +367,22 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
               <option value="restricted">Restricted</option>
               <option value="private">Private</option>
             </Select>
+            <Text fontWeight={600}>Invite Code</Text>
+                <Flex align="center">
+                  <Text
+
+                   fontSize="lg" fontWeight="bold" mr={2}>
+                    {inviteCode}
+                  </Text>
+                   <Tooltip label="Copy Invite Code">
+                       <Icon
+                       as={BsClipboard}
+                        fontSize="xl"
+                        cursor="pointer"
+                        onClick={() => navigator.clipboard.writeText(inviteCode)}
+                         />
+                    </Tooltip>
+            </Flex>
           </Stack>
         </ModalBody>
         <ModalFooter>

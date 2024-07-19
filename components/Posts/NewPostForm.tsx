@@ -19,6 +19,7 @@ import {
   serverTimestamp,
   Timestamp,
   updateDoc,
+  
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useRouter } from "next/router";
@@ -28,6 +29,7 @@ import { MdOutlineArrowBackIos } from "react-icons/md";
 import ImageUpload from "./PostForm/ImageUpload";
 import TextInputs from "./PostForm/TextInputs";
 import TabItem from "./TabItem";
+import apiSdk from "@/utils/bandada";
 
 /**
  * Props for NewPostForm component.
@@ -108,6 +110,19 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
    */
   const handleCreatePost = async () => {
     const { communityId } = router.query;
+    setLoading(true);
+    setError(false); // Reset error state
+
+    try {
+      // Generate the Merkle proof
+      const groupId = currentCommunity?.bandadaGroupId; // Ensure this is the correct group ID
+      const memberId = user?.uid;
+
+      if (!groupId || !memberId) {
+        throw new Error("Group ID or Member ID is missing");
+      }
+      const proof = await apiSdk.generateMerkleProof(groupId!, memberId);
+      console.log("Bonafide member")
     // create a new post object
     const newPost: Post = {
       communityId: communityId as string,
@@ -119,11 +134,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       numberOfComments: 0,
       voteStatus: 0,
       createTime: serverTimestamp() as Timestamp,
+      merkleProof: proof, // Add the generated Merkle proof to the post object
     }; // object representing the post
 
-    setLoading(true);
-
-    try {
       const postDocRef = await addDoc(collection(firestore, "posts"), newPost); // add the post to Firestore
       if (selectedFile) {
         // check if user has uploaded a file

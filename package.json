@@ -11,6 +11,7 @@
     "docker:compose": "docker-compose -f docker/docker-compose.yml up --build"
   },
   "dependencies": {
+    "@bandada/api-sdk": "^2.3.0",
     "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.8.2",
     "@chakra-ui/system": "^2.6.0",
@@ -25,13 +26,14 @@
     "@types/node": "20.14.0",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
+    "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
     "eslint-config-next": "14.2.3",
     "ethers": "^5.7.2",
     "firebase": "^10.12.2",
     "firebase-admin": "^12.1.1",
     "firebase-functions": "^5.0.1",
-    "framer-motion": "^11.2.10",
+    "framer-motion": "^11.3.7",
     "moment": "^2.29.4",
     "next": "^14.2.4",
     "react": "18.3.1",
@@ -40,11 +42,17 @@
     "react-icons": "^5.2.1",
     "recoil": "^0.7.6",
     "safe-json-stringify": "^1.2.0",
+    "snarkjs": "^0.7.4",
+    "tailwind-merge": "^2.4.0",
     "typescript": "5.4.5"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
     "@types/safe-json-stringify": "^1.1.2",
-    "eslint": "8"
+    "@types/snarkjs": "^0.7.8",
+    "autoprefixer": "^10.4.19",
+    "eslint": "8",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6"
   }
 }

@@ -25,6 +25,7 @@ These are the requirements needed to run the project:
 - Next.JS 12+
 - Firebase V9
 - Semaphore
+- Bandada
 
 
 # **Features**
@@ -32,10 +33,13 @@ These are the requirements needed to run the project:
 The system leverages Semaphore ZK proofs to manage user authentication and account management features designed to ensure that users have a seamless and secure experience:
 - Users can sign up using Semaphore ID.
 
+## **Privacy Preserving groups** ##
+In the realm of privacy and zero-knowledge technologies, the concept of a group takes on a significant role. A group, in this context, is more than just a collection of individuals; it represents an anonymity set. This means that within the group, individual members' actions, characteristics, or identities become indistinguishable from one another, providing a way for individuals to engage in collective actions or share attributes without revealing specific information about themselves.
+
 ## **Community**
 The system has several key community management features designed to promote engagement and collaboration among users:
-- Users can create communities (different types)
-- Users can subscribe and unsubscribe to and from a community
+- Users can create communities (different types)/ Bandada groups
+- Users can subscribe and unsubscribe to and from a community/ bandada invite codes which is signed by Akoben.
 - Admins can change or delete the community logo
 - Admins can change community visibility
 - Users can view and navigate to all public and restricted communities
@@ -75,6 +79,10 @@ These are the main technologies that were used in this project:
 - [**Firebase**](https://firebase.google.com/): Firebase is a mobile and web application development platform that provides a range of tools and services to help developers build high-quality apps quickly and easily. Firebase offers features such as real-time database, cloud storage, authentication, hosting, and more, all of which can be easily integrated into your Next.js app.
 
 - [**Semaphore**](https://semaphore.pse.dev/): Semaphore is a protocol for Web2 and Web3. It integrates into any front-end framework or pure HTML/CSS/JS. It is cross-chain compatible with EVM, L2s, and alt-blockchains. It  leverages Zero Knowledge, allowing us to verify information without revealing any underlying data. This powerful primitive allows one to prove membership and signal anonymously.
+
+- [**Bandada**](https://bandada.pse.dev/): Bandada is an infractructure to manage privacy-preserving groups. The groups can be managed using the Dashboard or the REST API endpoints or the API SDK library.
+
+- [**Circom**]()
 
 ## 1. **Clone the Project Locally**
 ```sh

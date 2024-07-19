@@ -24,6 +24,7 @@ import { IconType } from "react-icons";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
 import { HiLockClosed } from "react-icons/hi";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState";
+import apiSdk from "@/utils/bandada";
 
 /**
  * Options for the community type that can be created.
@@ -163,12 +164,28 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
           );
         }
 
+         // The CreateCommunityModal is responsible for gathering the necessary information and creating the community using Firebase and Bandada API
+
+
+        const groupCreateDetails = {
+          name: communityName,
+          description: `${communityType} community`,
+          treeDepth: 16,
+          fingerprintDuration: 3600
+        };
+
+        const bandadaApiKey = process.env.NEXT_PUBLIC_BANDADA_API_KEY || " ";
+        const group = await apiSdk.createGroup(groupCreateDetails, bandadaApiKey);
+        console.log(group);
+
+
         // create community
         transaction.set(communityDocRef, {
           creatorId: user?.uid,
           createdAt: serverTimestamp(),
           numberOfMembers: 1,
           privacyType: communityType,
+          bandadaGroupId: group.id,
         });
 
         // create community snippet on user
