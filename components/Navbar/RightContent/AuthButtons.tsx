@@ -11,7 +11,7 @@ const AuthButtons: React.FC = () => {
   };
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <Text></Text>;
   }
 
   if (error) {
