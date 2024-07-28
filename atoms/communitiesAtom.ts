@@ -21,6 +21,7 @@ export interface Community {
   createdAt?: Timestamp;
   imageURL?: string;
   bandadaGroupId?: string;
+  Community: string;
 }
 
 /**

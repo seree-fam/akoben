@@ -30,6 +30,7 @@ import ImageUpload from "./PostForm/ImageUpload";
 import TextInputs from "./PostForm/TextInputs";
 import TabItem from "./TabItem";
 import apiSdk from "@/utils/bandada";
+import { uploadReference } from '@mintbase-js/storage';
 
 /**
  * Props for NewPostForm component.
@@ -101,6 +102,17 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   const [error, setError] = useState(false);
   const showToast = useCustomToast();
   const communityLink = `/community/${currentCommunity?.id}`;
+   
+  const extractMediaValue = async (url: string): Promise<string | undefined> => {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.media || '';
+    } catch (error) {
+      console.error('Error:', error);
+      return '';
+    }
+  };
 
   /**
    * Handles the creation of a new post.
@@ -123,6 +135,31 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       }
       const proof = await apiSdk.generateMerkleProof(groupId!, memberId);
       console.log("Bonafide member")
+
+
+      // Upload the image to Arweave via Mintbase if there's a selected file
+      let imageURL = "";
+      if (selectedFile) {
+        const metadata = {
+          title: "Uploaded Image",
+          media: selectedFile,
+        };
+        const uploadResult = await uploadReference(metadata);
+
+        if (uploadResult) {
+          imageURL = "https://arweave.net/" + uploadResult.id;
+          const mediaValue = await extractMediaValue(imageURL);
+
+          if (mediaValue) {
+            imageURL = mediaValue;
+          } else {
+            throw new Error("Media value not found");
+          }
+        } else {
+          throw new Error("Failed to upload image to Arweave");
+        }
+      }
+
     // create a new post object
     const newPost: Post = {
       communityId: communityId as string,
@@ -135,6 +172,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       voteStatus: 0,
       createTime: serverTimestamp() as Timestamp,
       merkleProof: proof, // Add the generated Merkle proof to the post object
+      imageURL: imageURL, // Add the image link to the post object if it exists
     }; // object representing the post
 
       const postDocRef = await addDoc(collection(firestore, "posts"), newPost); // add the post to Firestore

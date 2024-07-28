@@ -40,6 +40,7 @@ import { BsFillPeopleFill, BsClipboard } from "react-icons/bs";
 import { useRecoilState } from "recoil";
 import { useSemaphoreAuthState } from "@/hooks/useSemaphoreAuthState"; 
 import { useInviteCode } from "@/hooks/useInviteCode";
+import { uploadReference } from '@mintbase-js/storage';
 
 /**
  * @param {boolean} open - boolean to determine if the modal is open or not
@@ -87,61 +88,55 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
    */
   const onUpdateImage = async () => {
     if (!selectedFile) {
-      // if no file is selected, do nothing
       return;
     }
 
-    setUploadingImage(true); // set uploading image to true
+    setUploadingImage(true);
     try {
-      // update image in the community collection
-      const imageRef = ref(storage, `communities/${communityData.id}/image`); // create reference to image in storage
-      await uploadString(imageRef, selectedFile, "data_url"); // upload image to storage
-      const downloadURL = await getDownloadURL(imageRef); // get download url of image
-      await updateDoc(doc(firestore, "communities", communityData.id), {
-        imageURL: downloadURL,
-      }); // update imageURL in firestore
+      const metadata = {
+        title: "Uploaded Image",
+        media: selectedFile
+      };
+      const uploadResult = await uploadReference(metadata);
 
-      // update imageURL in all users communitySnippets
-      // todo: refactor this to get all the semaphore id's from the blockchain rather than firestore
-      const usersSnapshot = await getDocs(collection(firestore, "users")); // get all users
-      usersSnapshot.forEach(async (userDoc) => {
-        // loop through all users
-        const communitySnippetDoc = await getDoc(
-          doc(firestore, "users", userDoc.id, "communitySnippets", communityData.id)
-        ); // get communitySnippet of the community
-        if (communitySnippetDoc.exists()) {
-          // if the communitySnippet exists, update the imageURL
-          await updateDoc(
-            doc(firestore, "users", userDoc.id, "communitySnippets", communityData.id),
-            {
-              imageURL: downloadURL,
+      const imageUrl = "https://arweave.net/" + uploadResult.id;
+      const mediaValue = await extractMediaValue(imageUrl);
+
+      if (mediaValue) {
+        setCommunityStateValue((prev) => ({
+          ...prev,
+          currentCommunity: {
+            ...prev.currentCommunity,
+            imageURL: mediaValue,
+          } as Community,
+        }));
+
+        setCommunityStateValue((prev) => ({
+          ...prev,
+          mySnippets: prev.mySnippets.map((snippet) => {
+            if (snippet.communityId === communityData.id) {
+              return {
+                ...snippet,
+                imageURL: mediaValue,
+              };
             }
-          );
-        }
-      });
+            return snippet;
+          }),
+        }));
 
-      // update imageURL in current community recoil state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        currentCommunity: {
-          ...prev.currentCommunity,
-          imageURL: downloadURL,
-        } as Community,
-      }));
-
-      // update mySnippet imageURL in recoil state
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: prev.mySnippets.map((snippet) => {
-          if (snippet.communityId === communityData.id) {
-            return {
-              ...snippet,
-              imageURL: downloadURL,
-            };
-          }
-          return snippet;
-        }),
-      }));
+        showToast({
+          title: "Image Updated",
+          description: "Community image has been updated",
+          status: "success",
+        });
+      } else {
+        console.error("Media value not found");
+        showToast({
+          title: "Image not Updated",
+          description: "There was an error updating the image",
+          status: "error",
+        });
+      }
     } catch (error) {
       console.log("Error: onUploadImage", error);
       showToast({
@@ -150,8 +145,19 @@ const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
         status: "error",
       });
     } finally {
-      setUploadingImage(false); // set uploading image to false
-      setSelectedFile(""); // clear selected file
+      setUploadingImage(false);
+      setSelectedFile("");
+    }
+  };
+
+  const extractMediaValue = async (url: string): Promise<string | undefined> => {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.media || '';
+    } catch (error) {
+      console.error('Error:', error);
+      return '';
     }
   };
 
